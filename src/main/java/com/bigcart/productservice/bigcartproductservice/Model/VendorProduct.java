@@ -3,6 +3,7 @@ package com.bigcart.productservice.bigcartproductservice.Model;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 public class VendorProduct {
@@ -13,7 +14,22 @@ public class VendorProduct {
     private Date dateAdded;
     private Date dateModified;
     private Integer qty;
-    private float price;
+    private Float price;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VendorProduct vendorProduct = (VendorProduct) o;
+        return vendorId.equals(vendorProduct.vendorId) &&
+               productId.equals(vendorProduct.productId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(productId, vendorId);
+    }
 
     public Integer getVendorId() {
         return vendorId;
