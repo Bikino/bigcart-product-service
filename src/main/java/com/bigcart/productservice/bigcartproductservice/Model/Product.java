@@ -16,12 +16,24 @@ public class Product {
     private String description;
     private String specs;
 
+    public Boolean getApproved() {
+        return isApproved;
+    }
+
+    public void setApproved(Boolean approved) {
+        isApproved = approved;
+    }
+
+    private Boolean isApproved;
+
     //Relations
     @ManyToOne
     private Category category;
+
     @ManyToMany
     @JoinTable
     private List<Review> reviews;
+
     @ManyToOne
     private VendorProduct vendors;
 
