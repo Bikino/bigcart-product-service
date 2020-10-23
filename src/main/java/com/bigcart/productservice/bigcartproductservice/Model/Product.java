@@ -10,28 +10,20 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer productId;
     private String name;
     private Integer categoryId;
     private String description;
     private String specs;
 
+    //Relations
     @ManyToOne
-    @JoinColumn
     private Category category;
-
     @ManyToMany
     @JoinTable
     private List<Review> reviews;
-
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private VendorProduct vendors;
-
-
-
-    public Product() {
-
-    }
 
 
     public String getName() {
@@ -66,12 +58,12 @@ public class Product {
         this.specs = specs;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setProductId(Integer id) {
+        this.productId = id;
     }
 
 
-    public Integer getId() {
-        return id;
+    public Integer getProductId() {
+        return productId;
     }
 }

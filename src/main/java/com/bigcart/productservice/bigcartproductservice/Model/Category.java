@@ -1,18 +1,14 @@
 package com.bigcart.productservice.bigcartproductservice.Model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import java.util.List;
+import javax.persistence.*;
 
 @Entity
 public class Category {
 
 
     @Id
-    @GeneratedValue
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer categoryId;
 
     private String name;
 
@@ -20,13 +16,13 @@ public class Category {
 
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getCategoryId() {
+        return categoryId;
     }
 
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCategoryId(Integer id) {
+        this.categoryId = id;
     }
 
     public String getName() {

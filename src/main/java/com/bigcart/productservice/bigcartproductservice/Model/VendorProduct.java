@@ -9,7 +9,7 @@ import java.util.Objects;
 public class VendorProduct {
     @Id
     private Integer vendorId;
-    @Id
+    //@Id
     private Integer productId;
     private Date dateAdded;
     private Date dateModified;
