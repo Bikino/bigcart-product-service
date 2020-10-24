@@ -15,6 +15,7 @@ public class Product {
     private Integer categoryId;
     private String description;
     private String specs;
+    private Boolean isApproved;
 
     public Boolean getApproved() {
         return isApproved;
@@ -24,7 +25,7 @@ public class Product {
         isApproved = approved;
     }
 
-    private Boolean isApproved;
+
 
     //Relations
     @ManyToOne
