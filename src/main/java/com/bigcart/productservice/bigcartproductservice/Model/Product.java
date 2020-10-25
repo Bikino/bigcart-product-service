@@ -36,7 +36,7 @@ public class Product {
     private List<Review> reviews;
 
     @ManyToOne
-    private VendorProduct vendors;
+    private ProductVendor vendors;
 
 
     public String getName() {

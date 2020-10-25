@@ -2,14 +2,16 @@ package com.bigcart.productservice.bigcartproductservice.Model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import java.util.Date;
 import java.util.Objects;
 
 @Entity
-public class VendorProduct {
+@IdClass(ProductVendorCKey.class)
+public class ProductVendor {
     @Id
     private Integer vendorId;
-    //@Id
+    @Id
     private Integer productId;
     private Date dateAdded;
     private Date dateModified;
@@ -21,7 +23,7 @@ public class VendorProduct {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        VendorProduct vendorProduct = (VendorProduct) o;
+        ProductVendor vendorProduct = (ProductVendor) o;
         return vendorId.equals(vendorProduct.vendorId) &&
                productId.equals(vendorProduct.productId);
     }
@@ -69,6 +71,9 @@ public class VendorProduct {
 
     public void setQty(Integer qty) {
         this.qty = qty;
+    }
+    public void decQty(Integer qty) {
+        this.qty = this.qty-qty;
     }
 
     public float getPrice() {
