@@ -1,7 +1,9 @@
 package com.bigcart.productservice.bigcartproductservice.Services;
 
-import com.bigcart.productservice.bigcartproductservice.DTO.ItemDTO;
-import com.bigcart.productservice.bigcartproductservice.DTO.ListItmeDTO;
+import com.bigcart.productservice.bigcartproductservice.DTO.ItemDto;
+import com.bigcart.productservice.bigcartproductservice.DTO.ItemDto;
+import com.bigcart.productservice.bigcartproductservice.DTO.ListDto;
+import com.bigcart.productservice.bigcartproductservice.DTO.ListDto;
 import com.bigcart.productservice.bigcartproductservice.Model.Product;
 import com.bigcart.productservice.bigcartproductservice.Model.ProductVendor;
 import com.bigcart.productservice.bigcartproductservice.Model.ProductVendorCKey;
@@ -15,9 +17,9 @@ public class ProductVendorServiceImpl implements ProductVendorService {
     @Autowired
     VendorProductRepository productRepository;
     @Override
-    public boolean removeProductV(ListItmeDTO items) {
+    public boolean removeProductV(ListDto items) {
 
-        for (ItemDTO i:items.getList()
+        for (ItemDto i:items.getList()
              ) {
             //TODO handle sold out
             ProductVendorCKey key= new ProductVendorCKey(i.getVendorId(),i.getItemtId());

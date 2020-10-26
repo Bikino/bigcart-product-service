@@ -1,12 +1,12 @@
 package com.bigcart.productservice.bigcartproductservice.DTO;
 
-public class ItemDTO {
+public class ItemDto {
     private long itemtId;
     private long vendorId;
     private int quantity;
 
-    public ItemDTO() {}
-    public ItemDTO(long itemtId, long vendorId, int quantity) {
+    public ItemDto() {}
+    public ItemDto(long itemtId, long vendorId, int quantity) {
         this.itemtId = itemtId;
         this.vendorId = vendorId;
         this.quantity = quantity;
@@ -34,5 +34,14 @@ public class ItemDTO {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    @Override
+    public String toString() {
+        return "ItemDto{" +
+                "itemtId=" + itemtId +
+                ", vendorId=" + vendorId +
+                ", quantity=" + quantity +
+                '}';
     }
 }
