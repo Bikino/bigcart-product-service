@@ -20,6 +20,7 @@ public class ProductVendorServiceImpl implements ProductVendorService {
         for (ItemDTO i:items.getList()
              ) {
             //TODO handle sold out
+
             ProductVendorCKey key= new ProductVendorCKey(i.getVendorId(),i.getItemtId());
             ProductVendor PV=  productRepository.findById(key).get();
             PV.decQty(i.getQuantity());

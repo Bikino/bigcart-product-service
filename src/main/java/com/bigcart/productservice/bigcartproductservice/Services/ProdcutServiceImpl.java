@@ -48,9 +48,10 @@ public class ProdcutServiceImpl implements ProductService {
     }
 
     @Override
-    public Product deleteProduct(long productId) {
+    public Boolean deleteProduct(long productId) {
+        if (getProduct(productId)==null)
+        return false;
         productRepository.deleteById(productId);
-        //TODO:
-        return null ;
+        return true ;
     }
 }

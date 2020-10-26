@@ -1,5 +1,7 @@
 package com.bigcart.productservice.bigcartproductservice.DTO;
 
+import java.io.Serializable;
+
 public class ItemDTO {
     private long itemtId;
     private long vendorId;

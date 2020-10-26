@@ -10,9 +10,9 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer productId;
+    private Long productId;
     private String name;
-    private Integer categoryId;
+    private Long categoryId;
     private String description;
     private String specs;
     private Boolean isApproved;
@@ -36,7 +36,7 @@ public class Product {
     private List<Review> reviews;
 
     @ManyToOne
-    private ProductVendor vendors;
+    private ProductVendor ProductVendor;
 
 
     public String getName() {
@@ -47,13 +47,7 @@ public class Product {
         this.name = name;
     }
 
-    public Integer getCategoryId() {
-        return categoryId;
-    }
 
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-    }
 
     public String getDescription() {
         return description;
@@ -71,12 +65,19 @@ public class Product {
         this.specs = specs;
     }
 
-    public void setProductId(Integer id) {
-        this.productId = id;
+    public Long getProductId() {
+        return productId;
     }
 
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
 
-    public Integer getProductId() {
-        return productId;
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 }

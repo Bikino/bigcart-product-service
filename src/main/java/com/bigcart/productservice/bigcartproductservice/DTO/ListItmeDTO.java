@@ -2,11 +2,12 @@ package com.bigcart.productservice.bigcartproductservice.DTO;
 
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ListItmeDTO {
+public class ListItmeDTO  {
     ArrayList<ItemDTO> list = new ArrayList<>();
-
+    public ListItmeDTO(){}
     public ListItmeDTO(ArrayList<ItemDTO> list) {
         this.list = list;
     }
@@ -18,10 +19,5 @@ public class ListItmeDTO {
     public void setList(ArrayList<ItemDTO> list) {
         this.list = list;
     }
-    public void addToList(ItemDTO itemDto) {
-        this.list.add(itemDto);
-    }
-    public void removeFromList(ItemDTO itemDto) {
-        this.list.remove(itemDto);
-    }
+
 }

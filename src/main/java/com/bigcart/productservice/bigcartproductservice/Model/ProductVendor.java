@@ -10,9 +10,9 @@ import java.util.Objects;
 @IdClass(ProductVendorCKey.class)
 public class ProductVendor {
     @Id
-    private Integer vendorId;
+    private Long vendorId;
     @Id
-    private Integer productId;
+    private Long productId;
     private Date dateAdded;
     private Date dateModified;
     private Integer qty;
@@ -33,19 +33,19 @@ public class ProductVendor {
         return Objects.hash(productId, vendorId);
     }
 
-    public Integer getVendorId() {
+    public Long getVendorId() {
         return vendorId;
     }
 
-    public void setVendorId(Integer vendorId) {
+    public void setVendorId(Long vendorId) {
         this.vendorId = vendorId;
     }
 
-    public Integer getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
-    public void setProductId(Integer productId) {
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 
@@ -84,12 +84,12 @@ public class ProductVendor {
         this.price = price;
     }
 
-    public void setVendorid(Integer id) {
+    public void setVendorid(Long id) {
         this.vendorId = id;
     }
 
 
-    public Integer getVendorid() {
+    public Long getVendorid() {
         return vendorId;
     }
 }

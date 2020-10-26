@@ -8,7 +8,7 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer categoryId;
+    private Long categoryId;
 
     private String name;
 
@@ -16,12 +16,12 @@ public class Category {
 
     }
 
-    public Integer getCategoryId() {
+    public Long getCategoryId() {
         return categoryId;
     }
 
 
-    public void setCategoryId(Integer id) {
+    public void setCategoryId(Long id) {
         this.categoryId = id;
     }
 
