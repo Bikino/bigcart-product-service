@@ -2,7 +2,6 @@ package com.bigcart.productservice.bigcartproductservice.DTO;
 
 
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class ListItmeDTO  {
