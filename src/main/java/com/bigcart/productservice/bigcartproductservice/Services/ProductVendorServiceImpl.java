@@ -1,55 +1,64 @@
 package com.bigcart.productservice.bigcartproductservice.Services;
 
-import com.bigcart.productservice.bigcartproductservice.DTO.ItemDTO;
-import com.bigcart.productservice.bigcartproductservice.DTO.ListItmeDTO;
-import com.bigcart.productservice.bigcartproductservice.Model.Product;
 import com.bigcart.productservice.bigcartproductservice.Model.ProductVendor;
 import com.bigcart.productservice.bigcartproductservice.Model.ProductVendorCKey;
-import com.bigcart.productservice.bigcartproductservice.Repository.VendorProductRepository;
+import com.bigcart.productservice.bigcartproductservice.Repository.ProductVendorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 @Service
 public class ProductVendorServiceImpl implements ProductVendorService {
     @Autowired
-    VendorProductRepository productRepository;
+    ProductVendorRepository productVendorRepository;
+
     @Override
-    public boolean removeProductV(ListItmeDTO items) {
+    public List<ProductVendor> findAll() {
+        return productVendorRepository.findAll();
+    }
 
-        for (ItemDTO i:items.getList()
-             ) {
-            //TODO handle sold out
+    @Override
+    public ProductVendor findById(Long productId, Long vendorId) {
+        return  productVendorRepository.findById(new ProductVendorCKey(productId, vendorId)).orElse(null);
+    }
 
-            ProductVendorCKey key= new ProductVendorCKey(i.getVendorId(),i.getItemtId());
-            ProductVendor PV=  productRepository.findById(key).get();
-            PV.decQty(i.getQuantity());
-            productRepository.save(PV);
+    @Override
+    public ProductVendor save(ProductVendor productVendor) {
+        ProductVendor pv = productVendorRepository.findById(new ProductVendorCKey(productVendor.getProductId(), productVendor.getVendorId())).orElse(null);
+        if(pv == null) {
+            productVendor.setDateAdded(LocalDateTime.now());
+            productVendor.setDateModified(LocalDateTime.now());
+            return productVendorRepository.save(productVendor);
         }
-
-
-        return false;
+            return null;
     }
 
     @Override
-    public Product getProductV(long productId) {
+    public ProductVendor update(ProductVendor productVendor) {
         return null;
     }
 
     @Override
-    public List<Product> getProductV() {
-        return null;
-    }
-
-    @Override
-    public Product editProductV(long productID, Product edit_product) {
-        return null;
-    }
-
-    @Override
-    public Product deleteProductV(long productId) {
+    public ProductVendor delete(ProductVendor productVendor) {
         return null;
     }
 
 
+
+
+    //    @Override
+//    public boolean removeProductV(ListItmeDTO items) {
+//
+//        for (ItemDTO i:items.getList()
+//             ) {
+//
+//            ProductVendorCKey key= new ProductVendorCKey(i.getVendorId(),i.getItemtId());
+//            ProductVendor PV=  vendorProductRepository.findById(key).get();
+//            PV.decQty(i.getQuantity());
+//            vendorProductRepository.save(PV);
+//        }
+//        return false;
+//    }
 }

@@ -1,4 +1,4 @@
-package com.bigcart.user.managementservice.bigcartusermanagementservice.domain.dto;
+package com.bigcart.productservice.bigcartproductservice.DTO;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;

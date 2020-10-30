@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ProdcutServiceImpl implements ProductService {
+public class ProductServiceImpl implements ProductService {
 
     @Autowired
     ProductRepository productRepository;
@@ -19,29 +19,28 @@ public class ProdcutServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getProduct(long productId) {
-        //TODO: else
-        return productRepository.findById(productId).get();
+    public Product findById(long productId) {
+        return productRepository.findById(productId).orElse(null);
     }
 
     @Override
-    public List<Product> getProducts() {
+    public List<Product> findAll() {
 
         return productRepository.findAll();
     }
 
     @Override
-    public Product updateProduct(long id, Product p) {
-        Product product = productRepository.findById(id).get();
-        if (product.equals(null)) {
+    public Product update(Product p) {
+        Product product = productRepository.findById(p.getId()).get();
+        if (product == null) {
             return null;
         }
         return productRepository.save(product);
     }
 
     @Override
-    public Boolean deleteProduct(long productId) {
-        if (getProduct(productId) == null)
+    public Boolean delete(long productId) {
+        if (findById(productId) == null)
             return false;
         productRepository.deleteById(productId);
         return true;

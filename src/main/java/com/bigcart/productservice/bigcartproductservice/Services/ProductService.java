@@ -8,11 +8,11 @@ import java.util.List;
 public interface ProductService {
     public Product addProduct(Product product);
 
-    public Product getProduct(long productId) ;
+    public Product findById(long productId) ;
 
-    public List<Product> getProducts();
+    public List<Product> findAll();
 
-    public Product editProduct(long productID, Product edit_product);
+    public Product update(Product product);
 
-    public Boolean deleteProduct(long productId);
+    public Boolean delete(long productId);
 }

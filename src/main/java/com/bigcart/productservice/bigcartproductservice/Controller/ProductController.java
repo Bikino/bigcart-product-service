@@ -1,19 +1,38 @@
 package com.bigcart.productservice.bigcartproductservice.Controller;
+
+import com.bigcart.productservice.bigcartproductservice.DTO.VendorProductDTO;
 import com.bigcart.productservice.bigcartproductservice.Model.Product;
+import com.bigcart.productservice.bigcartproductservice.Model.ProductImage;
+import com.bigcart.productservice.bigcartproductservice.Services.ProductImageService;
 import com.bigcart.productservice.bigcartproductservice.Services.ProductService;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/products")
 public class ProductController {
+    public static String uploadDirectory = System.getProperty("user.dir") + "/bigcart-product-service/src/main/resources/uploads";
+
     @Autowired
     ProductService productService;
+
+    @Autowired
+    ProductImageService productImageService;
 
     @PostMapping(value = "/")
     public ResponseEntity<Product> addProduct(@RequestBody Product product) {
@@ -23,19 +42,31 @@ public class ProductController {
         if (product == null) {
             return new ResponseEntity<Product>(HttpStatus.BAD_REQUEST);
         }
-        productService.addProduct(product);
+        productService.addProduct(product).getId();
 
-       return new ResponseEntity<Product>(product, headers, HttpStatus.CREATED);
-
+        return new ResponseEntity<Product>(product, headers, HttpStatus.CREATED);
     }
 
+
+
+    @PutMapping(value = "/update")
+    public ResponseEntity<Product> updateProduct(@RequestBody Product product) {
+
+        Product serviceResult = productService.update(product);
+
+        if ( serviceResult == null) {
+            return new ResponseEntity<Product>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<Product>(serviceResult, new HttpHeaders(), HttpStatus.OK);
+    }
 
     @GetMapping(value = "/")
     public ResponseEntity<List<Product>> getProducts() {
 
         HttpHeaders headers = new HttpHeaders();
 
-        List<Product> products = productService.getProducts();
+        List<Product> products = productService.findAll();
         if (products == null) {
             return new ResponseEntity<List<Product>>(HttpStatus.NOT_FOUND);
         }
@@ -47,36 +78,81 @@ public class ProductController {
     @GetMapping(value = "/{productId}")
     public ResponseEntity<Product> getProduct(@PathVariable long productId) {
 
-        Product product = productService.getProduct(productId);
+        Product product = productService.findById(productId);
 
         if (product == null) {
-
             return new ResponseEntity<Product>(HttpStatus.NOT_FOUND);
         }
 
         return new ResponseEntity<Product>(product, HttpStatus.OK);
     }
 
-    @PutMapping
-    public ResponseEntity<Product> editProduct(@RequestBody Product product) {
+    @DeleteMapping(value = "/{productId}")
+    public ResponseEntity deleteProduct(@PathVariable long productId) {
 
-        HttpHeaders headers = new HttpHeaders();
-        Product product_toEdit = productService.getProduct(product.getProductId());
-
-        if (product_toEdit == null) {
-
-            return new ResponseEntity<Product>(HttpStatus.NOT_FOUND);
-        }
-
-        Product updatedProduct = productService.editProduct(product.getProductId(), product);
-
-        return new ResponseEntity<Product>(updatedProduct, headers, HttpStatus.OK);
+        return new ResponseEntity(productService.delete(productId) ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping(value = "/{productId}")
-    public  ResponseEntity deleteProduct(@PathVariable long productId) {
+    // This way is less efficient. Remove later on.
+//    @PostMapping(value = "upload")
+//    public String uploadImage(@RequestParam("file") MultipartFile file) {
+//        Path p = Paths.get(uploadDirectory, file.getOriginalFilename());
+//        try {
+//            Files.write(p, file.getBytes());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return "OK";
+//    }
 
-        return new ResponseEntity( productService.deleteProduct(productId)? HttpStatus.OK : HttpStatus.NOT_FOUND);
+    @PostMapping(value = "uploadProductImage")
+    public ResponseEntity<String> uploadProductImage(@RequestParam("file") MultipartFile file) {
+        String productImageId = productImageService.save(new ProductImage()).getId().toString();
+
+        System.out.println(file.getOriginalFilename());
+
+        // Find image extension.
+        String[] temp = file.getOriginalFilename().split("\\.");
+        String imageExtension = temp[temp.length - 1];
+
+        // Build image url efficiently with directory, uniqueIdentifier, extension.
+        String fullPath = new StringBuilder(uploadDirectory).append("/").
+                append(productImageId).append(".").append(imageExtension).toString();
+        String partialPath = new StringBuilder(productImageId).append(".").append(imageExtension).toString();
+
+        // Save image to disk
+        try {
+            ImageIO.write(ImageIO.read(new ByteArrayInputStream(file.getBytes())), "png", new File(fullPath));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<String>(partialPath, new HttpHeaders(), HttpStatus.OK);
+    }
+
+    // Return actual image of a product
+    @GetMapping(value = "/image", produces = MediaType.IMAGE_JPEG_VALUE)
+    public @ResponseBody
+    byte[] getImageWithMediaType(@RequestBody String imageUrl) throws IOException {
+        InputStream in = getClass()
+                .getResourceAsStream("/uploads/" + imageUrl);
+        if (in == null) {
+            throw new IOException("Image with the URL: " + imageUrl + " does not exist.");
+        }
+        return IOUtils.toByteArray(in);
+    }
+
+    @GetMapping(value = "/vendorproductlist")
+    public List<VendorProductDTO> findAllVendorProductsDTO() {
+        List<VendorProductDTO> vendorProductDTOList = new ArrayList<VendorProductDTO>();
+
+
+
+//        RestTemplate restTemplate = new RestTemplate();
+//        List<VendorProductDTO> vendorProductDTOList = restTemplate.getForObject("USERMANAGEMENT-SERVICE", ArrayList.class);
+//        for (VendorProductDTO)
+
+        return vendorProductDTOList;
     }
 
 }

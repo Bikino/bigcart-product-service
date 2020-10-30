@@ -15,7 +15,6 @@ public class Review {
     private String review;
     private Integer rating;
 
-
     public Long getId() {
         return id;
     }

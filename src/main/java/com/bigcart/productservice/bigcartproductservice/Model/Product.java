@@ -7,37 +7,28 @@ import java.util.List;
 @Entity
 public class Product {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long productId;
+    private Long id;
     private String name;
-    private Long categoryId;
+    //private Long categoryId;
     private String description;
     private String specs;
-    private Boolean isApproved;
+    // to be changed
+    private String status;
+    private String imageUrl;
 
-    public Boolean getApproved() {
-        return isApproved;
-    }
-
-    public void setApproved(Boolean approved) {
-        isApproved = approved;
-    }
-
-
-
+    //@JoinColumn(name = "category_id")
     //Relations
     @ManyToOne
     private Category category;
 
-    @ManyToMany
-    @JoinTable
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "review_id")
     private List<Review> reviews;
 
-    @ManyToOne
-    private ProductVendor ProductVendor;
-
+    @OneToMany
+    private List<ProductVendor> ProductVendor;
 
     public String getName() {
         return name;
@@ -46,8 +37,6 @@ public class Product {
     public void setName(String name) {
         this.name = name;
     }
-
-
 
     public String getDescription() {
         return description;
@@ -65,19 +54,35 @@ public class Product {
         this.specs = specs;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Long getId() {
+        return id;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setId(Long productId) {
+        this.id = productId;
     }
 
-    public Long getCategoryId() {
-        return categoryId;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

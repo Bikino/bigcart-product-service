@@ -10,9 +10,9 @@ public class ProductVendorCKey implements Serializable {
 
     // default constructor
  public ProductVendorCKey(){}
-    public ProductVendorCKey(Long vendorId, Long productId) {
-        this.vendorId = vendorId;
+    public ProductVendorCKey(Long productId, Long vendorId) {
         this.productId = productId;
+        this.vendorId = vendorId;
     }
 
     // equals() and hashCode()

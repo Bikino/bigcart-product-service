@@ -19,7 +19,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category getCategory(long ctegoryId) {
-        return categoryRepository.getOne(ctegoryId);
+        return categoryRepository.findById(ctegoryId).get();
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.bigcart.productservice.bigcartproductservice.Model;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
@@ -10,14 +12,13 @@ import java.util.Objects;
 @IdClass(ProductVendorCKey.class)
 public class ProductVendor {
     @Id
-    private Long vendorId;
-    @Id
     private Long productId;
-    private Date dateAdded;
-    private Date dateModified;
+    @Id
+    private Long vendorId;
+    private LocalDateTime dateAdded;
+    private LocalDateTime dateModified;
     private Integer qty;
     private Float price;
-
 
     @Override
     public boolean equals(Object o) {
@@ -49,19 +50,19 @@ public class ProductVendor {
         this.productId = productId;
     }
 
-    public Date getDateAdded() {
+    public LocalDateTime getDateAdded() {
         return dateAdded;
     }
 
-    public void setDateAdded(Date dateAdded) {
+    public void setDateAdded(LocalDateTime dateAdded) {
         this.dateAdded = dateAdded;
     }
 
-    public Date getDateModified() {
+    public LocalDateTime getDateModified() {
         return dateModified;
     }
 
-    public void setDateModified(Date dateModified) {
+    public void setDateModified(LocalDateTime dateModified) {
         this.dateModified = dateModified;
     }
 
@@ -82,14 +83,5 @@ public class ProductVendor {
 
     public void setPrice(float price) {
         this.price = price;
-    }
-
-    public void setVendorid(Long id) {
-        this.vendorId = id;
-    }
-
-
-    public Long getVendorid() {
-        return vendorId;
     }
 }

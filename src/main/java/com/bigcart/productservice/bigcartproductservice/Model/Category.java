@@ -12,6 +12,19 @@ public class Category {
 
     private String name;
 
+//    private Long parentCategoryId;
+
+    @ManyToOne
+    private Category parentCategory;
+
+    public Category getParentCategory() {
+        return parentCategory;
+    }
+
+    public void setParentCategory(Category parentCategory) {
+        this.parentCategory = parentCategory;
+    }
+
     public Category() {
 
     }
