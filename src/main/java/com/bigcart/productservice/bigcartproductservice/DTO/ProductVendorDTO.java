@@ -1,7 +1,5 @@
 package com.bigcart.productservice.bigcartproductservice.DTO;
 
-import com.bigcart.productservice.bigcartproductservice.Model.Review;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

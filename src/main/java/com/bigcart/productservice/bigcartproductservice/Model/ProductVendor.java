@@ -19,6 +19,7 @@ public class ProductVendor {
     private Float price;
     private String status;
 
+
     public ProductVendor() {
     }
 

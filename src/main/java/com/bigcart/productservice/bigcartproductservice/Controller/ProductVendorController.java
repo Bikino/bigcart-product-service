@@ -123,7 +123,7 @@ public class ProductVendorController {
 //        productVendorService.removeProductV(listDto);
 //    }
 
-    @GetMapping(value = "/test")
+    @GetMapping(value = "/findAllVendorProductsDTO")
     public List<ProductVendorDTO> findAllVendorProductsDTO() {
         List<ProductVendorDTO> productVendorDTOList = new ArrayList<ProductVendorDTO>();
 
@@ -146,6 +146,7 @@ public class ProductVendorController {
             productVendorDTO.setModifiedDate(productVendor.getDateModified());
             // Pending to get requested function
             productVendorDTO.setVendorName("Microsoft");
+            productVendorDTOList.add(productVendorDTO);
         }
 
 
