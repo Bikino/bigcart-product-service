@@ -1,5 +1,8 @@
 package com.bigcart.productservice.bigcartproductservice.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.sql.Insert;
+
 import javax.persistence.*;
 
 @Entity
@@ -7,14 +10,26 @@ public class Category {
 
 
     @Id
+    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
 
     private String name;
 
-//    private Long parentCategoryId;
+    public Long getParentCategoryId() {
+        return parentCategoryId;
+    }
+
+    public void setParentCategoryId(Long parentCategoryId) {
+        this.parentCategoryId = parentCategoryId;
+    }
+
+    @Column(insertable = false,updatable = false)
+    private Long parentCategoryId;
 
     @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "parentCategoryId")
     private Category parentCategory;
 
     public Category getParentCategory() {

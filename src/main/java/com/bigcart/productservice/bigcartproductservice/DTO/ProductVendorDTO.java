@@ -1,52 +1,63 @@
 package com.bigcart.productservice.bigcartproductservice.DTO;
 
 import com.bigcart.productservice.bigcartproductservice.Model.Review;
-import javassist.runtime.Desc;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-public class VendorProductDTO {
+// to fetch existing products
+public class ProductVendorDTO {
     /* Given Requirements:
     LIST DTO (ID, Name, Picture URL  , PRICE , QTY, Desc, Specifications
 
             , Vendor name, List of reviews( name , review))
-
-
 
     Note: Specs String “comma separated values”
 
     Eg: Specs : (Dimentions,”12*13”,Ram ,12GB ,  )
     */
 
-    private Long id;
-    private String productName;
+    private Long productId;
+    private Long vendorId;
+    private String name;
     private String imageUrl;
     private double price;
     private int quantity;
     private String description;
     private String Specifications;
     private String vendorName;
-    private List<Review> reviewList;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
 
-    // take product and vendorproduct  then set vendor name
-    public VendorProductDTO() {
+    public ProductVendorDTO() {
 
     }
 
-    public Long getId() {
-        return id;
+    public Long getProductId() {
+        return productId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 
-    public String getProductName() {
-        return productName;
+    public Long getVendorId() {
+        return vendorId;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public void setVendorId(Long vendorId) {
+        this.vendorId = vendorId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getImageUrl() {
@@ -97,11 +108,20 @@ public class VendorProductDTO {
         this.vendorName = vendorName;
     }
 
-    public List<Review> getReviewList() {
-        return reviewList;
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
     }
 
-    public void setReviewList(List<Review> reviewList) {
-        this.reviewList = reviewList;
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
     }
+
+    public LocalDateTime getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(LocalDateTime modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
+
 }

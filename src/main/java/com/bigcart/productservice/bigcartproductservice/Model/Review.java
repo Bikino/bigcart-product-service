@@ -1,26 +1,32 @@
 package com.bigcart.productservice.bigcartproductservice.Model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 
 @Entity
 public class Review {
     @Id
+    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-    private Long id;
+    @Column(name = "review_id")
+    private Long review_id;
     private Long userId;
     private String review;
     private Integer rating;
 
-    public Long getId() {
-        return id;
+    @ManyToOne
+    ProductVendor productVendor;
+
+    public Review() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Long getReview_id() {
+        return review_id;
+    }
+
+    public void setReview_id(Long id) {
+        this.review_id = id;
     }
 
     public Long getUserId() {

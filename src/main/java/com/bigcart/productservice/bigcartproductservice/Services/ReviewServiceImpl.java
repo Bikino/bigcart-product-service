@@ -29,7 +29,7 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     public Review update(Review review) {
-        Review r = reviewRepository.findById(review.getId()).get();
+        Review r = reviewRepository.findById(review.getReview_id()).get();
         if(r == null) {
             return null;
         }
@@ -38,6 +38,6 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     public void delete(Review review) {
-         reviewRepository.deleteById(review.getId());
+         reviewRepository.deleteById(review.getReview_id());
     }
 }

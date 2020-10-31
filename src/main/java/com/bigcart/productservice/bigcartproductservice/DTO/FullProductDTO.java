@@ -2,6 +2,7 @@ package com.bigcart.productservice.bigcartproductservice.DTO;
 
 import java.time.LocalDateTime;
 
+// brand new product
 public class FullProductDTO {
     private String name;
     private Long categoryId;

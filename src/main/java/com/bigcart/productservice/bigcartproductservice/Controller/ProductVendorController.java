@@ -2,11 +2,10 @@
 package com.bigcart.productservice.bigcartproductservice.Controller;
 
 import com.bigcart.productservice.bigcartproductservice.DTO.FullProductDTO;
-import com.bigcart.productservice.bigcartproductservice.DTO.ListItmeDTO;
-import com.bigcart.productservice.bigcartproductservice.DTO.VendorProductDTO;
-import com.bigcart.productservice.bigcartproductservice.Model.Category;
+import com.bigcart.productservice.bigcartproductservice.DTO.ProductVendorDTO;
 import com.bigcart.productservice.bigcartproductservice.Model.Product;
 import com.bigcart.productservice.bigcartproductservice.Model.ProductVendor;
+import com.bigcart.productservice.bigcartproductservice.Model.Review;
 import com.bigcart.productservice.bigcartproductservice.Services.CategoryService;
 import com.bigcart.productservice.bigcartproductservice.Services.ProductService;
 import com.bigcart.productservice.bigcartproductservice.Services.ProductVendorService;
@@ -17,8 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/productvendors")
@@ -58,8 +56,6 @@ public class ProductVendorController {
         //create product
         Product product = new Product();
         product.setName(fullProductDTO.getName());
-        product.setStatus("Pending");
-        product.setImageUrl(fullProductDTO.getImageUrl());
         product.setSpecs(fullProductDTO.getSpecs());
         product.setDescription(fullProductDTO.getDescription());
 
@@ -72,10 +68,14 @@ public class ProductVendorController {
         productVendor.setProductId(p.getId());
         productVendor.setPrice(fullProductDTO.getPrice());
         productVendor.setQty(fullProductDTO.getQty());
+        productVendor.setStatus(fullProductDTO.getStatus());
+        productVendor.setImageUrl(fullProductDTO.getImageUrl());
+        productVendor.setReviews(new ArrayList<>());
         productVendor.setVendorId(fullProductDTO.getVendorId());
+        productVendor.setStatus("Pending");
+        productVendor.setImageUrl(fullProductDTO.getImageUrl());
 
         productVendorService.save(productVendor);
-
 
         return new ResponseEntity("Product added for admin review.", new HttpHeaders(), HttpStatus.CREATED);
     }
@@ -115,18 +115,8 @@ public class ProductVendorController {
             return new ResponseEntity<ProductVendor>(HttpStatus.BAD_REQUEST);
         }
         productVendorService.save(productVendor);
-
         return new ResponseEntity<ProductVendor>(productVendor, headers, HttpStatus.CREATED);
     }
-
-
-
-
-
-
-
-
-
 
 //    @PostMapping("/remove")
 //    public void removeProducts(@RequestBody ListItmeDTO listDto) {
@@ -134,12 +124,30 @@ public class ProductVendorController {
 //    }
 
     @GetMapping(value = "/test")
-    public List<VendorProductDTO> findAllVendorProductsDTO() {
-        List<VendorProductDTO> vendorProductDTOList = new ArrayList<VendorProductDTO>();
+    public List<ProductVendorDTO> findAllVendorProductsDTO() {
+        List<ProductVendorDTO> productVendorDTOList = new ArrayList<ProductVendorDTO>();
 
-        // get vendor product list
+        List<ProductVendor> productVendorList = productVendorService.findAll();
 
-        // get product list
+        List<Product> productList = productService.findAll();
+
+        for(ProductVendor productVendor : productVendorList) {
+            ProductVendorDTO productVendorDTO = new ProductVendorDTO();
+            Product product = productService.findById(productVendor.getProductId());
+            productVendorDTO.setProductId(productVendor.getProductId());
+            productVendorDTO.setVendorId(productVendor.getVendorId());
+            productVendorDTO.setName(product.getName());
+            productVendorDTO.setDescription(product.getDescription());
+            productVendorDTO.setSpecifications(product.getSpecs());
+            productVendorDTO.setImageUrl(productVendor.getImageUrl());
+            productVendorDTO.setPrice(productVendor.getPrice());
+            productVendorDTO.setQuantity(productVendor.getQty());
+            productVendorDTO.setCreatedDate(productVendor.getDateAdded());
+            productVendorDTO.setModifiedDate(productVendor.getDateModified());
+            // Pending to get requested function
+            productVendorDTO.setVendorName("Microsoft");
+        }
+
 
         // call to get vendor name
 
@@ -152,12 +160,12 @@ public class ProductVendorController {
 //        List<VendorProductDTO> list = restTemplate.getForObject("USERMANAGEMENT-SERVICE", ArrayList.class);
 //        for (Ven)
 
-        int i = 0;
+//        int i = 0;
+//
+//        RestTemplate restTemplate = new RestTemplate();
+//        ProductVendorDTO vendor = restTemplate.getForObject("usermanagement-service/vendor/1", ProductVendorDTO.class);
 
-        RestTemplate restTemplate = new RestTemplate();
-        VendorProductDTO vendor = restTemplate.getForObject("usermanagement-service/vendor/1", VendorProductDTO.class);
-
-        return vendorProductDTOList;
+        return productVendorDTOList;
     }
 
 

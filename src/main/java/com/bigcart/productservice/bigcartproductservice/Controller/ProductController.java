@@ -1,6 +1,6 @@
 package com.bigcart.productservice.bigcartproductservice.Controller;
 
-import com.bigcart.productservice.bigcartproductservice.DTO.VendorProductDTO;
+import com.bigcart.productservice.bigcartproductservice.DTO.ProductVendorDTO;
 import com.bigcart.productservice.bigcartproductservice.Model.Product;
 import com.bigcart.productservice.bigcartproductservice.Model.ProductImage;
 import com.bigcart.productservice.bigcartproductservice.Services.ProductImageService;
@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -143,8 +142,8 @@ public class ProductController {
     }
 
     @GetMapping(value = "/vendorproductlist")
-    public List<VendorProductDTO> findAllVendorProductsDTO() {
-        List<VendorProductDTO> vendorProductDTOList = new ArrayList<VendorProductDTO>();
+    public List<ProductVendorDTO> findAllVendorProductsDTO() {
+        List<ProductVendorDTO> productVendorDTOList = new ArrayList<ProductVendorDTO>();
 
 
 
@@ -152,7 +151,7 @@ public class ProductController {
 //        List<VendorProductDTO> vendorProductDTOList = restTemplate.getForObject("USERMANAGEMENT-SERVICE", ArrayList.class);
 //        for (VendorProductDTO)
 
-        return vendorProductDTOList;
+        return productVendorDTOList;
     }
 
 }
