@@ -14,7 +14,7 @@ public class Product {
     @JsonIgnore
     @Column(name = "product_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long productId;
     @Column(insertable = false,updatable = false)
     private Long categoryId;
     private String name;
@@ -33,7 +33,7 @@ public class Product {
     @OneToMany()
     @JsonIgnore
     @JoinColumn(name = "product_id",referencedColumnName = "product_id")
-    private List<ProductVendor> ProductVendor = new ArrayList<>();
+    private List<VendorProduct> VendorProduct = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -59,12 +59,12 @@ public class Product {
         this.specifications = specs;
     }
 
-    public Long getId() {
-        return id;
+    public Long getProductId() {
+        return productId;
     }
 
-    public void setId(Long productId) {
-        this.id = productId;
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 
 
@@ -76,12 +76,12 @@ public class Product {
         this.category = category;
     }
 
-    public List<com.bigcart.productservice.bigcartproductservice.Model.ProductVendor> getProductVendor() {
-        return ProductVendor;
+    public List<VendorProduct> getProductVendor() {
+        return VendorProduct;
     }
 
-    public void setProductVendor(List<com.bigcart.productservice.bigcartproductservice.Model.ProductVendor> productVendor) {
-        ProductVendor = productVendor;
+    public void setProductVendor(List<VendorProduct> vendorProduct) {
+        VendorProduct = vendorProduct;
     }
 
     public Long getCategoryId() {

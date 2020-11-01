@@ -5,13 +5,14 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
-@IdClass(ProductVendorCKey.class)
-public class ProductVendor {
+@IdClass(VendorProductCKey.class)
+public class VendorProduct {
+    @Id
+    private Long vendorId;
     @Id
     @Column(name = "product_id")
     private Long productId;
-    @Id
-    private Long vendorId;
+
     private LocalDateTime requestDate;
     private LocalDateTime approvalDate;
     private LocalDateTime modificationDate;
@@ -19,15 +20,13 @@ public class ProductVendor {
     private Float price;
     private String status;
 
-
-    public ProductVendor() {
+    public VendorProduct() {
     }
 
     private String imageUrl;
 
-
-    @OneToMany(mappedBy = "productVendor")
-    private List<Review> reviews = new ArrayList<>();
+//    @OneToMany(mappedBy = "productVendor")
+//    private List<Review> reviews = new ArrayList<>();
 
 
     public void setPrice(Float price) {
@@ -50,18 +49,33 @@ public class ProductVendor {
         this.imageUrl = imageUrl;
     }
 
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        VendorProduct vendorProduct = (VendorProduct) o;
+//        return vendorId.equals(vendorProduct.vendorId) &&
+//                productId.equals(vendorProduct.productId);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(productId, vendorId);
+//    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ProductVendor vendorProduct = (ProductVendor) o;
-        return vendorId.equals(vendorProduct.vendorId) &&
-                productId.equals(vendorProduct.productId);
+        if (!(o instanceof VendorProduct)) return false;
+        VendorProduct that = (VendorProduct) o;
+        return vendorId.equals(that.vendorId) &&
+                productId.equals(that.productId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(productId, vendorId);
+        return Objects.hash(vendorId, productId);
     }
 
     public Long getVendorId() {
@@ -100,13 +114,13 @@ public class ProductVendor {
         this.price = price;
     }
 
-    public List<Review> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
-    }
+//    public List<Review> getReviews() {
+//        return reviews;
+//    }
+//
+//    public void setReviews(List<Review> reviews) {
+//        this.reviews = reviews;
+//    }
 
     public LocalDateTime getRequestDate() {
         return requestDate;

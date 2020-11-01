@@ -6,12 +6,12 @@ import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class ProductVendorCKey implements Serializable{
+public class VendorProductCKey implements Serializable{
     private Long vendorId;
     private Long productId;
 
- public ProductVendorCKey(){}
-    public ProductVendorCKey(Long productId, Long vendorId) {
+ public VendorProductCKey(){}
+    public VendorProductCKey(Long vendorId, Long productId) {
         this.productId = productId;
         this.vendorId = vendorId;
     }

@@ -41,7 +41,7 @@ public class ProductController {
         if (product == null) {
             return new ResponseEntity<Product>(HttpStatus.BAD_REQUEST);
         }
-        productService.addProduct(product).getId();
+        productService.addProduct(product).getProductId();
 
         return new ResponseEntity<Product>(product, headers, HttpStatus.CREATED);
     }
