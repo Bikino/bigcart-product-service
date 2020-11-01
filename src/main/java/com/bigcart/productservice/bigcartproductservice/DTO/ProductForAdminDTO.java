@@ -12,7 +12,7 @@ public class ProductForAdminDTO {
 //
 //        Vendor Id, Vendor name, Price, Date Posted)
 
-    private ProductVendorCKey vendorproductId;
+    private String vendorproductId;
     private Long categoryId;
     private Long vendorId;
     private String vendorName;
@@ -99,11 +99,11 @@ public class ProductForAdminDTO {
         this.quantity = quantity;
     }
 
-    public ProductVendorCKey getVendorproductId() {
+    public String getVendorproductId() {
         return vendorproductId;
     }
 
-    public void setVendorproductId(ProductVendorCKey vendorproductId) {
+    public void setVendorproductId(String vendorproductId) {
         this.vendorproductId = vendorproductId;
     }
 

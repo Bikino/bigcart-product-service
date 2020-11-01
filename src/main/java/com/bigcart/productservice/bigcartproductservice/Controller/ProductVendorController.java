@@ -172,28 +172,28 @@ public class ProductVendorController {
         return new ResponseEntity(productVendorDTOList, new HttpHeaders(), HttpStatus.OK);
     }
 
-//    @GetMapping(value = "/findAllVendorProductsDTOforAdmin")
-//    public ResponseEntity findAllVendorProductsDTOforAdmin() {
-//        List<ProductForAdminDTO> productForAdminDTOList = new ArrayList<>();
-//        for(ProductVendor productVendor : productVendorService.findAll()) {
-//            Product product = productService.findById(productVendor.getProductId());
-//            Category category = categoryService.findById(product.getCategoryId());
-//            ProductForAdminDTO productForAdminDTO = new ProductForAdminDTO();
-//            productForAdminDTO.setRequestDate(productVendor.getRequestDate());
-//            productForAdminDTO.setApprovalDate(productVendor.getApprovalDate());
-//            productForAdminDTO.setModificationDate(productVendor.getModificationDate());
-//            productForAdminDTO.setCategoryId(category.getCategoryId());
-//            productForAdminDTO.setCategoryName(category.getName());
-//            productForAdminDTO.setPrice(productVendor.getPrice());
-//            productForAdminDTO.setQuantity(productVendor.getQuantity());
-//            productForAdminDTO.setVendorId(productVendor.getVendorId());
-//            //Should be changed to make it dynamic vendor name.
-//            productForAdminDTO.setVendorName("Microsoft");
-//            productForAdminDTO.setProductName(product.getName());
-//            productForAdminDTO.setVendorproductId(new ProductVendorCKey(productVendor.getProductId(), productVendor.getVendorId()));
-//            productForAdminDTOList.add(productForAdminDTO);
-//        }
-//        return new ResponseEntity(productForAdminDTOList, new HttpHeaders(), HttpStatus.OK);
-//    }
+    @GetMapping(value = "/findAllVendorProductsDTOforAdmin")
+    public ResponseEntity findAllVendorProductsDTOforAdmin() {
+        List<ProductForAdminDTO> productForAdminDTOList = new ArrayList<>();
+        for(ProductVendor productVendor : productVendorService.findAll()) {
+            Product product = productService.findById(productVendor.getProductId());
+            Category category = categoryService.findById(product.getCategoryId());
+            ProductForAdminDTO productForAdminDTO = new ProductForAdminDTO();
+            productForAdminDTO.setRequestDate(productVendor.getRequestDate());
+            productForAdminDTO.setApprovalDate(productVendor.getApprovalDate());
+            productForAdminDTO.setModificationDate(productVendor.getModificationDate());
+            productForAdminDTO.setCategoryId(category.getCategoryId());
+            productForAdminDTO.setCategoryName(category.getName());
+            productForAdminDTO.setPrice(productVendor.getPrice());
+            productForAdminDTO.setQuantity(productVendor.getQuantity());
+            productForAdminDTO.setVendorId(productVendor.getVendorId());
+            //Should be changed to make it dynamic vendor name.
+            productForAdminDTO.setVendorName("Microsoft");
+            productForAdminDTO.setProductName(product.getName());
+            productForAdminDTO.setVendorproductId(productVendor.getProductId() + "-" + productVendor.getVendorId());
+            productForAdminDTOList.add(productForAdminDTO);
+        }
+        return new ResponseEntity(productForAdminDTOList, new HttpHeaders(), HttpStatus.OK);
+    }
 
 }
