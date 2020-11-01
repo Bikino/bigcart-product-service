@@ -173,26 +173,31 @@ public class ProductVendorController {
     }
 
     @GetMapping(value = "/findPendingProductsDTO")
-    public ResponseEntity findPendingProductsDTO(@RequestBody Map<String, String> request) {
-        if (request.get("categoryId") == null) {
-            if (request.get("vendorId") == null) {
-                if (request.get("vendorProductId") == null) {
-                    return new ResponseEntity(
-                            productVendorService.productToProductDTO(productVendorService.findAll(),
-                                    "pending"), new HttpHeaders(), HttpStatus.OK);
+    public ResponseEntity findPendingProductsDTO(@RequestBody(required = false) Map<String, String> request) {
+        if (request == null) {
+            return new ResponseEntity(
+                    productVendorService.productToProductDTO(productVendorService.findAll(),
+                            "pending"), new HttpHeaders(), HttpStatus.OK);
+        } else {
+            if (request.get("categoryId") == null) {
+                if (request.get("vendorId") == null) {
+                    if (request.get("vendorProductId") == null) {
+                        return new ResponseEntity(
+                                productVendorService.productToProductDTO(productVendorService.findAll(),
+                                        "pending"), new HttpHeaders(), HttpStatus.OK);
+                    }
+                }
+                // no cat no vendpro yes vend
+                else if (request.get("vendorProductId") == null) {
+                    productVendorService.findAllByVendorId(Long.parseLong(request.get("vendorId")));
+                }
+                // no cat yes vend yes vendpro
+                else {
+                    String[] s = request.get("vendorProductId").split("-");
+
+                    //   productVendorService.findById()
                 }
             }
-            // no cat no vendpro yes vend
-            else if (request.get("vendorProductId") == null) {
-                productVendorService.findAllByVendorId(Long.parseLong(request.get("vendorId")));
-            }
-            // no cat yes vend yes vendpro
-            else {
-                String[] s = request.get("vendorProductId").split("-");
-
-                //   productVendorService.findById()
-            }
-
         }
 
 
@@ -201,7 +206,7 @@ public class ProductVendorController {
 //    {
 //        return new ResponseEntity("ok", new HttpHeaders(), HttpStatus.OK);
 //    }
-    return null;
+        return null;
 
     }
 
