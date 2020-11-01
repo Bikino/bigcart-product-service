@@ -13,11 +13,12 @@ import java.util.List;
 public interface ProductVendorService {
     List<ProductVendor> findAll();
     List<ProductVendor> findAllByVendorId(Long id);
-    List<ProductForAdminDTO> productToProductDTO (List<ProductVendor> productVendorList, String status);
+    List<ProductForAdminDTO> productToProductDTOList(List<ProductVendor> productVendorList, String status);
 
     ProductVendor findById(Long productId, Long vendorId) ;
     ProductVendor findByVendorId(Long VendorId);
     ProductVendor findByCategoryId(Long CategoryId);
+    ProductForAdminDTO productToProductDTO(ProductVendor productVendor, String status);
 
     ProductVendor save(ProductVendor productVendor);
     ProductVendor update(ProductVendor productVendor);

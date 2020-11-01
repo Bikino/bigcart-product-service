@@ -6,7 +6,6 @@ import com.bigcart.productservice.bigcartproductservice.DTO.ProductVendorDTO;
 import com.bigcart.productservice.bigcartproductservice.Model.Category;
 import com.bigcart.productservice.bigcartproductservice.Model.Product;
 import com.bigcart.productservice.bigcartproductservice.Model.ProductVendor;
-import com.bigcart.productservice.bigcartproductservice.Model.ProductVendorCKey;
 import com.bigcart.productservice.bigcartproductservice.Services.CategoryService;
 import com.bigcart.productservice.bigcartproductservice.Services.ProductService;
 import com.bigcart.productservice.bigcartproductservice.Services.ProductVendorService;
@@ -151,13 +150,8 @@ public class ProductVendorController {
             productVendorDTO.setVendorName("Microsoft");
             productVendorDTOList.add(productVendorDTO);
         }
-
-
         // call to get vendor name
-
         // merge and return
-
-
         // List <ProductVendor> productVendorList = productVendorService.getProductV();
 
 //        RestTemplate restTemplate = new RestTemplate();
@@ -172,39 +166,101 @@ public class ProductVendorController {
         return new ResponseEntity(productVendorDTOList, new HttpHeaders(), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/findPendingProductsDTO")
-    public ResponseEntity findPendingProductsDTO(
+    @GetMapping(value = "/findProductForAdminDTO")
+    public ResponseEntity findProductForAdminDTO(
             @RequestParam(required = false) String categoryId,
-            String vendorProductId, String vendorId) {
-        final String status = "pending";
+            String vendorProductId, String vendorId, String status) {
 
-        if (categoryId == null) {
-            if (vendorId == null) {
-                if (vendorProductId == null) {
-                    return new ResponseEntity(
-                            productVendorService.productToProductDTO(productVendorService.findAll(),
-                                    status), new HttpHeaders(), HttpStatus.OK);
-                }
-            }
-            // no cat no vendpro yes vend
-            else if (vendorProductId == null) {
-                productVendorService.findAllByVendorId(Long.parseLong(vendorId));
-            }
-            // no cat yes vend yes vendpro
-            else {
-                String[] s = vendorProductId.split("-");
-                productVendorService.findById(Long.parseLong(s[0]), Long.parseLong(s[1]));
-            }
+        if(status == null)  {
+            return new ResponseEntity(
+                    "Product status is required."
+                    , new HttpHeaders(), HttpStatus.OK);
         }
-        return new ResponseEntity("null", new HttpHeaders(), HttpStatus.OK);
+
+        if(!(status.equals("pending")) && !(status.equals("approved"))
+                && !(status.equals("deleted")) && !(status.equals("declined"))) {
+            return new ResponseEntity(
+                    "Invalid product status."
+                    , new HttpHeaders(), HttpStatus.OK);
+        }
+
+        if (vendorProductId == null) {
+            if (categoryId == null) {
+                if (vendorId == null) {
+                    return new ResponseEntity(
+                            productVendorService.productToProductDTOList(
+                                    productVendorService.findAll(),
+                                    status), new HttpHeaders(), HttpStatus.OK);
+                } else {
+                    return new ResponseEntity(productVendorService.
+                            productToProductDTOList(
+                            productVendorService.findAllByVendorId(
+                                    Long.parseLong(vendorId)), status),
+                            new HttpHeaders(), HttpStatus.OK);
+                }
+            } else if (vendorId != null) {
+                List<ProductVendor> pvList = productVendorService.findAllByVendorId(
+                        Long.parseLong(vendorId));
+                List<ProductVendor> filteredList = new ArrayList<>();
+                for (ProductVendor pv : pvList) {
+                    Product p = productService.findById(pv.getProductId());
+                    Category c = p.getCategory();
+                    String cid = c.getCategoryId().toString();
+                    if (cid.equals(categoryId)) {
+                        filteredList.add(pv);
+                    }
+                }
+                return new ResponseEntity(productVendorService.productToProductDTOList(
+                        filteredList, status), new HttpHeaders(), HttpStatus.OK);
+            } else {
+                List<ProductVendor> pvList = productVendorService.findAll();
+                List<ProductVendor> filteredList = new ArrayList<>();
+                for (ProductVendor pv : pvList) {
+                    Product p = productService.findById(pv.getProductId());
+                    Category c = p.getCategory();
+                    String cid = c.getCategoryId().toString();
+                    if (cid.equals(categoryId)) {
+                        filteredList.add(pv);
+                    }
+                }
+                return new ResponseEntity(productVendorService.productToProductDTOList(
+                        filteredList, status), new HttpHeaders(), HttpStatus.OK);
+            }
+        } else if ((categoryId == null && vendorId == null)) {
+            List<ProductForAdminDTO> list = new ArrayList<>();
+            String[] s = vendorProductId.split("-");
+            ProductForAdminDTO productForAdminDTO =
+                    productVendorService.productToProductDTO(
+                    productVendorService.findById(
+                            Long.parseLong(s[0]), Long.parseLong(s[1])), status);
+            list.add(productForAdminDTO);
+            return new ResponseEntity(list, new HttpHeaders(), HttpStatus.OK);
+        } else if (categoryId == null) {
+            List<ProductForAdminDTO> list = new ArrayList<>();
+            String[] s = vendorProductId.split("-");
+            ProductVendor pv = productVendorService.findById(
+                    Long.parseLong(s[0]), Long.parseLong(s[1]));
+            if(pv.getVendorId().toString().equals(vendorId)) {
+                list.add(productVendorService.productToProductDTO(pv,status));
+            }
+            return new ResponseEntity(list, new HttpHeaders(), HttpStatus.OK);
+        } else {
+            List<ProductForAdminDTO> filteredList = new ArrayList<>();
+            String[] s = vendorProductId.split("-");
+            ProductVendor pv = productVendorService.findById(
+                    Long.parseLong(s[0]), Long.parseLong(s[1]));
+            if (pv == null) {
+                return new ResponseEntity(filteredList,
+                        new HttpHeaders(), HttpStatus.OK);
+            }
+
+            Product p = productService.findById(pv.getProductId());
+            Category c = p.getCategory();
+            String cid = c.getCategoryId().toString();
+            if (cid.equals(categoryId)) {
+                filteredList.add(productVendorService.productToProductDTO(pv, status));
+            }
+            return new ResponseEntity(filteredList, new HttpHeaders(), HttpStatus.OK);
+        }
     }
-
-
-    //if(request.get("categoryId")!=null&&request.get("vendorProductId")!=null&&request.get("vendorId")!=null)
-
-//    {
-//        return new ResponseEntity("ok", new HttpHeaders(), HttpStatus.OK);
-//    }
-
-
 }

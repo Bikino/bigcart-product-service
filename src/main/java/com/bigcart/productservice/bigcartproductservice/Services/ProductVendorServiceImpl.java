@@ -40,7 +40,7 @@ public class ProductVendorServiceImpl implements ProductVendorService {
     }
 
     @Override
-    public List<ProductForAdminDTO> productToProductDTO(List<ProductVendor> productVendorList, String status) {
+    public List<ProductForAdminDTO> productToProductDTOList(List<ProductVendor> productVendorList, String status) {
 
         List<ProductForAdminDTO> productForAdminDTOList = new ArrayList<>();
 
@@ -76,6 +76,30 @@ public class ProductVendorServiceImpl implements ProductVendorService {
     @Override
     public ProductVendor findByCategoryId(Long CategoryId) {
         return null;
+    }
+
+    @Override
+    public ProductForAdminDTO productToProductDTO(ProductVendor productVendor, String status) {
+
+        if(productVendor == null) {
+            return null;
+        }
+
+        ProductForAdminDTO productForAdminDTO = null;
+
+        if (productVendor.getStatus().equals(status)) {
+            Product product = productService.findById(productVendor.getProductId());
+            Category category = categoryService.findById(product.getCategoryId());
+            productForAdminDTO = new ProductForAdminDTO(
+                    productVendor.getRequestDate(), productVendor.getApprovalDate(),
+                    productVendor.getModificationDate(), category.getCategoryId(),
+                    category.getName(), productVendor.getPrice(), productVendor.getQuantity(),
+                    productVendor.getVendorId(),
+                    "Microsoft", product.getName(),
+                    productVendor.getProductId() + "-" + productVendor.getVendorId()
+            );
+        }
+        return productForAdminDTO;
     }
 
     @Override
