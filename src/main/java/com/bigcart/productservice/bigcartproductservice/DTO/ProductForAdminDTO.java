@@ -1,8 +1,5 @@
 package com.bigcart.productservice.bigcartproductservice.DTO;
 
-import com.bigcart.productservice.bigcartproductservice.Model.Product;
-import com.bigcart.productservice.bigcartproductservice.Model.ProductVendorCKey;
-
 import java.time.LocalDateTime;
 
 public class ProductForAdminDTO {
@@ -12,7 +9,7 @@ public class ProductForAdminDTO {
 //
 //        Vendor Id, Vendor name, Price, Date Posted)
 
-    private String vendorproductId;
+    private String vendorProductId;
     private Long categoryId;
     private Long vendorId;
     private String vendorName;
@@ -25,6 +22,24 @@ public class ProductForAdminDTO {
     private LocalDateTime modificationDate;
 
     public ProductForAdminDTO() {
+    }
+
+    public ProductForAdminDTO(LocalDateTime requestDate, LocalDateTime approvalDate,
+                              LocalDateTime modificationDate, Long categoryId,
+                              String categoryName, double price, int quantity,
+                              Long vendorId, String vendorName, String productName,
+                              String vendorProductId) {
+        this.requestDate = requestDate;
+        this.approvalDate = approvalDate;
+        this.modificationDate = modificationDate;
+        this.categoryId = categoryId;
+        this.categoryName = categoryName;
+        this.price = price;
+        this.quantity = quantity;
+        this.vendorId = vendorId;
+        this.vendorName = vendorName;
+        this.productName = productName;
+        this.vendorProductId = vendorProductId;
     }
 
     public Long getCategoryId() {
@@ -99,12 +114,12 @@ public class ProductForAdminDTO {
         this.quantity = quantity;
     }
 
-    public String getVendorproductId() {
-        return vendorproductId;
+    public String getVendorProductId() {
+        return vendorProductId;
     }
 
-    public void setVendorproductId(String vendorproductId) {
-        this.vendorproductId = vendorproductId;
+    public void setVendorProductId(String vendorProductId) {
+        this.vendorProductId = vendorProductId;
     }
 
     public String getVendorName() {

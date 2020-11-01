@@ -85,17 +85,17 @@ public class ProductVendorController {
     @PostMapping(value = "/sellsameproduct")
     public ResponseEntity sellSameProduct(@RequestBody ProductVendor productVendor) {
 
-        if(productVendor == null)
+        if (productVendor == null)
             return new ResponseEntity("Posted product vendor is null.", HttpStatus.BAD_REQUEST);
-        if(productVendor.getProductId() == null)
+        if (productVendor.getProductId() == null)
             return new ResponseEntity("Posted product doesn't include product id.", HttpStatus.BAD_REQUEST);
-        if(productVendor.getVendorId() == null)
+        if (productVendor.getVendorId() == null)
             return new ResponseEntity("Posted product doesn't include vendor id.", HttpStatus.BAD_REQUEST);
 
         // verify vendor exists here
 
         Product p = productService.findById(productVendor.getProductId());
-        if(p == null) {
+        if (p == null) {
             return new ResponseEntity("No such product exists.", HttpStatus.BAD_REQUEST);
         }
 
@@ -133,7 +133,7 @@ public class ProductVendorController {
 
         List<Product> productList = productService.findAll();
 
-        for(ProductVendor productVendor : productVendorList) {
+        for (ProductVendor productVendor : productVendorList) {
             ProductVendorDTO productVendorDTO = new ProductVendorDTO();
             Product product = productService.findById(productVendor.getProductId());
             productVendorDTO.setProductId(productVendor.getProductId());
@@ -158,7 +158,7 @@ public class ProductVendorController {
         // merge and return
 
 
-       // List <ProductVendor> productVendorList = productVendorService.getProductV();
+        // List <ProductVendor> productVendorList = productVendorService.getProductV();
 
 //        RestTemplate restTemplate = new RestTemplate();
 //        List<VendorProductDTO> list = restTemplate.getForObject("USERMANAGEMENT-SERVICE", ArrayList.class);
@@ -172,28 +172,38 @@ public class ProductVendorController {
         return new ResponseEntity(productVendorDTOList, new HttpHeaders(), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/findAllVendorProductsDTOforAdmin")
-    public ResponseEntity findAllVendorProductsDTOforAdmin() {
-        List<ProductForAdminDTO> productForAdminDTOList = new ArrayList<>();
-        for(ProductVendor productVendor : productVendorService.findAll()) {
-            Product product = productService.findById(productVendor.getProductId());
-            Category category = categoryService.findById(product.getCategoryId());
-            ProductForAdminDTO productForAdminDTO = new ProductForAdminDTO();
-            productForAdminDTO.setRequestDate(productVendor.getRequestDate());
-            productForAdminDTO.setApprovalDate(productVendor.getApprovalDate());
-            productForAdminDTO.setModificationDate(productVendor.getModificationDate());
-            productForAdminDTO.setCategoryId(category.getCategoryId());
-            productForAdminDTO.setCategoryName(category.getName());
-            productForAdminDTO.setPrice(productVendor.getPrice());
-            productForAdminDTO.setQuantity(productVendor.getQuantity());
-            productForAdminDTO.setVendorId(productVendor.getVendorId());
-            //Should be changed to make it dynamic vendor name.
-            productForAdminDTO.setVendorName("Microsoft");
-            productForAdminDTO.setProductName(product.getName());
-            productForAdminDTO.setVendorproductId(productVendor.getProductId() + "-" + productVendor.getVendorId());
-            productForAdminDTOList.add(productForAdminDTO);
+    @GetMapping(value = "/findPendingProductsDTO")
+    public ResponseEntity findPendingProductsDTO(@RequestBody Map<String, String> request) {
+        if (request.get("categoryId") == null) {
+            if (request.get("vendorId") == null) {
+                if (request.get("vendorProductId") == null) {
+                    return new ResponseEntity(
+                            productVendorService.productToProductDTO(productVendorService.findAll(),
+                                    "pending"), new HttpHeaders(), HttpStatus.OK);
+                }
+            }
+            // no cat no vendpro yes vend
+            else if (request.get("vendorProductId") == null) {
+                productVendorService.findAllByVendorId(Long.parseLong(request.get("vendorId")));
+            }
+            // no cat yes vend yes vendpro
+            else {
+                String[] s = request.get("vendorProductId").split("-");
+
+                //   productVendorService.findById()
+            }
+
         }
-        return new ResponseEntity(productForAdminDTOList, new HttpHeaders(), HttpStatus.OK);
+
+
+        //if(request.get("categoryId")!=null&&request.get("vendorProductId")!=null&&request.get("vendorId")!=null)
+
+//    {
+//        return new ResponseEntity("ok", new HttpHeaders(), HttpStatus.OK);
+//    }
+    return null;
+
     }
+
 
 }
