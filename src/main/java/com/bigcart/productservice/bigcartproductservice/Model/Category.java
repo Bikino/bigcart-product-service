@@ -7,10 +7,7 @@ import javax.persistence.*;
 
 @Entity
 public class Category {
-
-
     @Id
-    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
 
@@ -28,7 +25,7 @@ public class Category {
     private Long parentCategoryId;
 
     @ManyToOne
-    @JsonIgnore
+    //@JsonIgnore
     @JoinColumn(name = "parentCategoryId")
     private Category parentCategory;
 
