@@ -17,6 +17,12 @@ public class CategoryController {
     @Autowired
     CategoryService categoryService;
 
+    @GetMapping(value = "/")
+    public ResponseEntity findAllCategories() {
+        List<Category> categoryList = categoryService.findAll();
+        return new ResponseEntity(categoryList, new HttpHeaders(), HttpStatus.OK);
+    }
+
     @PostMapping(value = "/")
     public ResponseEntity<Category> addCategory(@RequestBody Category category) {
 
@@ -25,31 +31,19 @@ public class CategoryController {
         if (category == null) {
             return new ResponseEntity<Category>(HttpStatus.BAD_REQUEST);
         }
-        categoryService.addCategory(category);
+        categoryService.save(category);
 
        return new ResponseEntity<Category>(category, headers, HttpStatus.CREATED);
 
     }
 
 
-    @GetMapping(value = "/")
-    public ResponseEntity<List<Category>> getCategorys() {
 
-        HttpHeaders headers = new HttpHeaders();
-
-        List<Category> Categorys = categoryService.getCategorys();
-        if (Categorys == null) {
-            return new ResponseEntity<List<Category>>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<List<Category>>(Categorys, headers, HttpStatus.OK);
-
-    }
 
     @GetMapping(value = "/{CategoryId}")
     public ResponseEntity<Category> getCategory(@PathVariable long CategoryId) {
 
-        Category Category = categoryService.getCategory(CategoryId);
+        Category Category = categoryService.findById(CategoryId);
 
         if (Category == null) {
 
@@ -59,26 +53,26 @@ public class CategoryController {
         return new ResponseEntity<Category>(Category, HttpStatus.OK);
     }
 
-    @PutMapping
-    public ResponseEntity<Category> editCategory(@RequestBody Category Category) {
-
-        HttpHeaders headers = new HttpHeaders();
-        Category Category_toEdit = categoryService.getCategory(Category.getCategoryId());
-
-        if (Category_toEdit == null) {
-
-            return new ResponseEntity<Category>(HttpStatus.NOT_FOUND);
-        }
-
-        Category updatedCategory = categoryService.editCategory(Category.getCategoryId(), Category);
-
-        return new ResponseEntity<Category>(updatedCategory, headers, HttpStatus.OK);
-    }
+//    @PutMapping
+//    public ResponseEntity<Category> editCategory(@RequestBody Category Category) {
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        Category Category_toEdit = categoryService.findById(Category.getCategoryId());
+//
+//        if (Category_toEdit == null) {
+//
+//            return new ResponseEntity<Category>(HttpStatus.NOT_FOUND);
+//        }
+//
+//        Category updatedCategory = categoryService.update(Category.getCategoryId(), Category);
+//
+//        return new ResponseEntity<Category>(updatedCategory, headers, HttpStatus.OK);
+//    }
 
     @DeleteMapping(value = "/{CategoryId}")
     public  ResponseEntity deleteCategory(@PathVariable long CategoryId) {
 
-        return new ResponseEntity( categoryService.deleteCategory(CategoryId)? HttpStatus.OK : HttpStatus.NOT_FOUND);
+        return new ResponseEntity( categoryService.delete(CategoryId)? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
 }

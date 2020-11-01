@@ -3,7 +3,7 @@ package com.bigcart.productservice.bigcartproductservice.Model;
 import javax.persistence.Id;
 import java.io.Serializable;
 
-public class ProductVendorCKey implements Serializable {
+public class ProductVendorCKey implements Serializable{
     private Long vendorId;
 
     private Long productId;

@@ -1,11 +1,12 @@
-
 package com.bigcart.productservice.bigcartproductservice.Controller;
 
 import com.bigcart.productservice.bigcartproductservice.DTO.FullProductDTO;
+import com.bigcart.productservice.bigcartproductservice.DTO.ProductForAdminDTO;
 import com.bigcart.productservice.bigcartproductservice.DTO.ProductVendorDTO;
+import com.bigcart.productservice.bigcartproductservice.Model.Category;
 import com.bigcart.productservice.bigcartproductservice.Model.Product;
 import com.bigcart.productservice.bigcartproductservice.Model.ProductVendor;
-import com.bigcart.productservice.bigcartproductservice.Model.Review;
+import com.bigcart.productservice.bigcartproductservice.Model.ProductVendorCKey;
 import com.bigcart.productservice.bigcartproductservice.Services.CategoryService;
 import com.bigcart.productservice.bigcartproductservice.Services.ProductService;
 import com.bigcart.productservice.bigcartproductservice.Services.ProductVendorService;
@@ -14,8 +15,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
@@ -51,29 +52,30 @@ public class ProductVendorController {
     }
 
     @PostMapping(value = "/")
-    public ResponseEntity addProduct(@RequestBody FullProductDTO fullProductDTO) {
+    public ResponseEntity addProductRequest(@RequestBody FullProductDTO fullProductDTO) {
 
         //create product
         Product product = new Product();
         product.setName(fullProductDTO.getName());
-        product.setSpecs(fullProductDTO.getSpecs());
+        product.setSpecifications(fullProductDTO.getSpecs());
         product.setDescription(fullProductDTO.getDescription());
 
         //set category
-        product.setCategory(categoryService.getCategory(fullProductDTO.getCategoryId()));
+        product.setCategory(categoryService.findById(fullProductDTO.getCategoryId()));
         Product p = productService.addProduct(product);
 
         //create product vendor
         ProductVendor productVendor = new ProductVendor();
         productVendor.setProductId(p.getId());
         productVendor.setPrice(fullProductDTO.getPrice());
-        productVendor.setQty(fullProductDTO.getQty());
+        productVendor.setQuantity(fullProductDTO.getQty());
         productVendor.setStatus(fullProductDTO.getStatus());
         productVendor.setImageUrl(fullProductDTO.getImageUrl());
         productVendor.setReviews(new ArrayList<>());
         productVendor.setVendorId(fullProductDTO.getVendorId());
         productVendor.setStatus("Pending");
         productVendor.setImageUrl(fullProductDTO.getImageUrl());
+        productVendor.setRequestDate(LocalDateTime.now());
 
         productVendorService.save(productVendor);
 
@@ -124,7 +126,7 @@ public class ProductVendorController {
 //    }
 
     @GetMapping(value = "/findAllVendorProductsDTO")
-    public List<ProductVendorDTO> findAllVendorProductsDTO() {
+    public ResponseEntity findAllVendorProductsDTOforVendor() {
         List<ProductVendorDTO> productVendorDTOList = new ArrayList<ProductVendorDTO>();
 
         List<ProductVendor> productVendorList = productVendorService.findAll();
@@ -138,12 +140,13 @@ public class ProductVendorController {
             productVendorDTO.setVendorId(productVendor.getVendorId());
             productVendorDTO.setName(product.getName());
             productVendorDTO.setDescription(product.getDescription());
-            productVendorDTO.setSpecifications(product.getSpecs());
+            productVendorDTO.setSpecifications(product.getSpecifications());
             productVendorDTO.setImageUrl(productVendor.getImageUrl());
             productVendorDTO.setPrice(productVendor.getPrice());
-            productVendorDTO.setQuantity(productVendor.getQty());
-            productVendorDTO.setCreatedDate(productVendor.getDateAdded());
-            productVendorDTO.setModifiedDate(productVendor.getDateModified());
+            productVendorDTO.setQuantity(productVendor.getQuantity());
+            productVendorDTO.setRequestDate(productVendor.getRequestDate());
+            productVendorDTO.setApprovalDate(productVendor.getApprovalDate());
+            productVendorDTO.setModificationDate(productVendor.getModificationDate());
             // Pending to get requested function
             productVendorDTO.setVendorName("Microsoft");
             productVendorDTOList.add(productVendorDTO);
@@ -166,8 +169,31 @@ public class ProductVendorController {
 //        RestTemplate restTemplate = new RestTemplate();
 //        ProductVendorDTO vendor = restTemplate.getForObject("usermanagement-service/vendor/1", ProductVendorDTO.class);
 
-        return productVendorDTOList;
+        return new ResponseEntity(productVendorDTOList, new HttpHeaders(), HttpStatus.OK);
     }
 
+//    @GetMapping(value = "/findAllVendorProductsDTOforAdmin")
+//    public ResponseEntity findAllVendorProductsDTOforAdmin() {
+//        List<ProductForAdminDTO> productForAdminDTOList = new ArrayList<>();
+//        for(ProductVendor productVendor : productVendorService.findAll()) {
+//            Product product = productService.findById(productVendor.getProductId());
+//            Category category = categoryService.findById(product.getCategoryId());
+//            ProductForAdminDTO productForAdminDTO = new ProductForAdminDTO();
+//            productForAdminDTO.setRequestDate(productVendor.getRequestDate());
+//            productForAdminDTO.setApprovalDate(productVendor.getApprovalDate());
+//            productForAdminDTO.setModificationDate(productVendor.getModificationDate());
+//            productForAdminDTO.setCategoryId(category.getCategoryId());
+//            productForAdminDTO.setCategoryName(category.getName());
+//            productForAdminDTO.setPrice(productVendor.getPrice());
+//            productForAdminDTO.setQuantity(productVendor.getQuantity());
+//            productForAdminDTO.setVendorId(productVendor.getVendorId());
+//            //Should be changed to make it dynamic vendor name.
+//            productForAdminDTO.setVendorName("Microsoft");
+//            productForAdminDTO.setProductName(product.getName());
+//            productForAdminDTO.setVendorproductId(new ProductVendorCKey(productVendor.getProductId(), productVendor.getVendorId()));
+//            productForAdminDTOList.add(productForAdminDTO);
+//        }
+//        return new ResponseEntity(productForAdminDTOList, new HttpHeaders(), HttpStatus.OK);
+//    }
 
 }

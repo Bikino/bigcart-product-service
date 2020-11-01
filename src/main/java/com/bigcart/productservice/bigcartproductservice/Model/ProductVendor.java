@@ -1,7 +1,6 @@
 package com.bigcart.productservice.bigcartproductservice.Model;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -13,9 +12,10 @@ public class ProductVendor {
     private Long productId;
     @Id
     private Long vendorId;
-    private LocalDateTime dateAdded;
-    private LocalDateTime dateModified;
-    private Integer qty;
+    private LocalDateTime requestDate;
+    private LocalDateTime approvalDate;
+    private LocalDateTime modificationDate;
+    private Integer quantity;
     private Float price;
     private String status;
 
@@ -80,32 +80,16 @@ public class ProductVendor {
         this.productId = productId;
     }
 
-    public LocalDateTime getDateAdded() {
-        return dateAdded;
+    public Integer getQuantity() {
+        return quantity;
     }
 
-    public void setDateAdded(LocalDateTime dateAdded) {
-        this.dateAdded = dateAdded;
-    }
-
-    public LocalDateTime getDateModified() {
-        return dateModified;
-    }
-
-    public void setDateModified(LocalDateTime dateModified) {
-        this.dateModified = dateModified;
-    }
-
-    public Integer getQty() {
-        return qty;
-    }
-
-    public void setQty(Integer qty) {
-        this.qty = qty;
+    public void setQuantity(Integer qty) {
+        this.quantity = qty;
     }
 
     public void decQty(Integer qty) {
-        this.qty = this.qty - qty;
+        this.quantity = this.quantity - qty;
     }
 
     public float getPrice() {
@@ -122,5 +106,29 @@ public class ProductVendor {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public LocalDateTime getRequestDate() {
+        return requestDate;
+    }
+
+    public void setRequestDate(LocalDateTime dateRequested) {
+        this.requestDate = dateRequested;
+    }
+
+    public LocalDateTime getApprovalDate() {
+        return approvalDate;
+    }
+
+    public void setApprovalDate(LocalDateTime dateApproved) {
+        this.approvalDate = dateApproved;
+    }
+
+    public LocalDateTime getModificationDate() {
+        return modificationDate;
+    }
+
+    public void setModificationDate(LocalDateTime dateModified) {
+        this.modificationDate = dateModified;
     }
 }

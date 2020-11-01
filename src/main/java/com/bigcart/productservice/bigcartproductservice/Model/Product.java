@@ -19,7 +19,7 @@ public class Product {
     private Long categoryId;
     private String name;
     private String description;
-    private String specs;
+    private String specifications;
 
     public Product() {
     }
@@ -51,12 +51,12 @@ public class Product {
         this.description = description;
     }
 
-    public String getSpecs() {
-        return specs;
+    public String getSpecifications() {
+        return specifications;
     }
 
-    public void setSpecs(String specs) {
-        this.specs = specs;
+    public void setSpecifications(String specs) {
+        this.specifications = specs;
     }
 
     public Long getId() {

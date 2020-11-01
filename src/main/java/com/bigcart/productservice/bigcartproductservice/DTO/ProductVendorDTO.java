@@ -1,10 +1,6 @@
 package com.bigcart.productservice.bigcartproductservice.DTO;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 // to fetch existing products
 public class ProductVendorDTO {
@@ -27,8 +23,9 @@ public class ProductVendorDTO {
     private String description;
     private String Specifications;
     private String vendorName;
-    private LocalDateTime createdDate;
-    private LocalDateTime modifiedDate;
+    private LocalDateTime requestDate;
+    private LocalDateTime approvalDate;
+    private LocalDateTime modificationDate;
 
     public ProductVendorDTO() {
 
@@ -106,20 +103,27 @@ public class ProductVendorDTO {
         this.vendorName = vendorName;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
+    public LocalDateTime getApprovalDate() {
+        return approvalDate;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
+    public void setApprovalDate(LocalDateTime approvalDate) {
+        this.approvalDate = approvalDate;
     }
 
-    public LocalDateTime getModifiedDate() {
-        return modifiedDate;
+    public LocalDateTime getModificationDate() {
+        return modificationDate;
     }
 
-    public void setModifiedDate(LocalDateTime modifiedDate) {
-        this.modifiedDate = modifiedDate;
+    public void setModificationDate(LocalDateTime modificationDate) {
+        this.modificationDate = modificationDate;
     }
 
+    public LocalDateTime getRequestDate() {
+        return requestDate;
+    }
+
+    public void setRequestDate(LocalDateTime requestDate) {
+        this.requestDate = requestDate;
+    }
 }

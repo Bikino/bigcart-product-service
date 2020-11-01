@@ -6,9 +6,9 @@ import com.bigcart.productservice.bigcartproductservice.Repository.ProductVendor
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+
 @Service
 public class ProductVendorServiceImpl implements ProductVendorService {
     @Autowired
@@ -21,18 +21,16 @@ public class ProductVendorServiceImpl implements ProductVendorService {
 
     @Override
     public ProductVendor findById(Long productId, Long vendorId) {
-        return  productVendorRepository.findById(new ProductVendorCKey(productId, vendorId)).orElse(null);
+        return productVendorRepository.findById(new ProductVendorCKey(productId, vendorId)).orElse(null);
     }
 
     @Override
     public ProductVendor save(ProductVendor productVendor) {
         ProductVendor pv = productVendorRepository.findById(new ProductVendorCKey(productVendor.getProductId(), productVendor.getVendorId())).orElse(null);
-        if(pv == null) {
-            productVendor.setDateAdded(LocalDateTime.now());
-            productVendor.setDateModified(LocalDateTime.now());
-            return productVendorRepository.save(productVendor);
-        }
+        if (pv == null) {
             return null;
+        }
+        return productVendorRepository.save(productVendor);
     }
 
     @Override
