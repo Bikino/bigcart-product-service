@@ -11,6 +11,8 @@ public interface VendorProductService {
     List<VendorProduct> findAllByVendorId(Long id);
     List<ProductForAdminDTO> productToProductDTOList(List<VendorProduct> vendorProductList, String status);
     List<ProductForAdminDTO> productToProductDTOList(List<VendorProduct> vendorProductList);
+    String getVendorNameByVendorId(String vendorId);
+    String getVendorNameByVendorId(Long vendorId);
 
 
     VendorProduct findById(Long productId, Long vendorId) ;

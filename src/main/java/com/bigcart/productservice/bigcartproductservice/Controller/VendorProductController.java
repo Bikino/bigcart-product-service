@@ -159,17 +159,8 @@ public class VendorProductController {
             productVendorDTO.setModificationDate(vendorProduct.getModificationDate());
 
             String vendorId = vendorProduct.getVendorId().toString();
-            VendorNameDTO v = null;
 
-            try {
-                v = restTemplate.getForObject("http://localhost:9988/vendor/" + vendorId, VendorNameDTO.class);
-            }
-            catch (Exception e) {
-                productVendorDTO.setVendorName("Unknown");
-                productVendorDTOList.add(productVendorDTO);
-                continue;
-            }
-            productVendorDTO.setVendorName(v.getCompanyName());
+            productVendorDTO.setVendorName(vendorProductService.getVendorNameByVendorId(vendorId));
             productVendorDTOList.add(productVendorDTO);
         }
         // call to get vendor name

@@ -1,6 +1,7 @@
 package com.bigcart.productservice.bigcartproductservice.Services;
 
 import com.bigcart.productservice.bigcartproductservice.DTO.ProductForAdminDTO;
+import com.bigcart.productservice.bigcartproductservice.DTO.VendorNameDTO;
 import com.bigcart.productservice.bigcartproductservice.Model.Category;
 import com.bigcart.productservice.bigcartproductservice.Model.Product;
 import com.bigcart.productservice.bigcartproductservice.Model.VendorProduct;
@@ -9,6 +10,7 @@ import com.bigcart.productservice.bigcartproductservice.Repository.CategoryRepos
 import com.bigcart.productservice.bigcartproductservice.Repository.VendorProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +53,7 @@ public class VendorProductServiceImpl implements VendorProductService {
                         vendorProduct.getModificationDate(), category.getCategoryId(),
                         category.getName(), vendorProduct.getPrice(), vendorProduct.getQuantity(),
                         vendorProduct.getVendorId(),
-                        "Microsoft", product.getName(),
+                        getVendorNameByVendorId(vendorProduct.getVendorId()), product.getName(),
                         vendorProduct.getVendorId() + "-" + vendorProduct.getProductId()
                 );
                 productForAdminDTOList.add(productForAdminDTO);
@@ -73,12 +75,38 @@ public class VendorProductServiceImpl implements VendorProductService {
                         vendorProduct.getModificationDate(), category.getCategoryId(),
                         category.getName(), vendorProduct.getPrice(), vendorProduct.getQuantity(),
                         vendorProduct.getVendorId(),
-                        "Microsoft", product.getName(),
+                        getVendorNameByVendorId(vendorProduct.getVendorId()), product.getName(),
                         vendorProduct.getProductId() + "-" + vendorProduct.getVendorId()
                 );
                 productForAdminDTOList.add(productForAdminDTO);
         }
         return productForAdminDTOList;
+    }
+
+    @Override
+    public String getVendorNameByVendorId(String vendorId) {
+        RestTemplate restTemplate = new RestTemplate();
+        VendorNameDTO v;
+        try {
+            v = restTemplate.getForObject("http://localhost:9988/vendor/" + vendorId, VendorNameDTO.class);
+        }
+        catch (Exception e) {
+            return "Unknown";
+        }
+        return v.getCompanyName();
+    }
+
+    @Override
+    public String getVendorNameByVendorId(Long vendorId) {
+        RestTemplate restTemplate = new RestTemplate();
+        VendorNameDTO v;
+        try {
+            v = restTemplate.getForObject("http://localhost:9988/vendor/" + vendorId.toString(), VendorNameDTO.class);
+        }
+        catch (Exception e) {
+            return "Unknown";
+        }
+        return v.getCompanyName();
     }
 
     @Override
@@ -108,12 +136,14 @@ public class VendorProductServiceImpl implements VendorProductService {
         if (vendorProduct.getStatus().equals(status)) {
             Product product = productService.findById(vendorProduct.getProductId());
             Category category = categoryService.findById(product.getCategoryId());
+
+
             productForAdminDTO = new ProductForAdminDTO(
                     vendorProduct.getRequestDate(), vendorProduct.getApprovalDate(),
                     vendorProduct.getModificationDate(), category.getCategoryId(),
                     category.getName(), vendorProduct.getPrice(), vendorProduct.getQuantity(),
                     vendorProduct.getVendorId(),
-                    "Microsoft", product.getName(),
+                    getVendorNameByVendorId(vendorProduct.getVendorId()), product.getName(),
                     vendorProduct.getProductId() + "-" + vendorProduct.getVendorId()
             );
         }
