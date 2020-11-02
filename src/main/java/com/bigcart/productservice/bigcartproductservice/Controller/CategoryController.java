@@ -67,7 +67,7 @@ public class CategoryController {
         }
         c.setName(category.getName());
         categoryService.save(c);
-        return new ResponseEntity("New category name: " + category.getName(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity("New category name: " + category.getName(), new HttpHeaders(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{CategoryId}")
