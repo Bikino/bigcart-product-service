@@ -152,4 +152,15 @@ public class ProductController {
         return productVendorDTOList;
     }
 
+    @PostMapping(value = "/productNames")
+    public ResponseEntity productNames(@RequestBody List<Long> idList) {
+        List<String> productNameList = new ArrayList<>();
+        for( Long id : idList) {
+            Product product = productService.findById(id);
+            if(product != null) {
+                productNameList.add(product.getName());
+            }
+        }
+        return new ResponseEntity(productNameList, new HttpHeaders(), HttpStatus.OK);
+    }
 }
