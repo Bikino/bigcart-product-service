@@ -28,6 +28,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public List<Category> findAllByParentCategoryId(Long parentCategoryId) {
+        return categoryRepository.findAllByParentCategoryId(parentCategoryId);
+    }
+
+    @Override
     public Category update(Category category) {
         Category c = categoryRepository.findById(category.getCategoryId()).orElse(null);
         if (c==null)
@@ -38,9 +43,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Boolean delete(long categoryId) {
-        if (findById( categoryId)==null)
+        if (findById(categoryId)==null)
             return false;
-        categoryRepository.deleteById( categoryId);
-        return true ;
+        Category category = findById(categoryId);
+        for(Category c : findAllByParentCategoryId(categoryId)) {
+            categoryRepository.deleteById(c.getCategoryId());
+        }
+        categoryRepository.deleteById(categoryId);
+        return true;
     }
 }

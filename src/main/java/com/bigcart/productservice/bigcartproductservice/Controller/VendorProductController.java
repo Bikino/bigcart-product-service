@@ -318,6 +318,30 @@ public class VendorProductController {
         return new ResponseEntity(new FullProductDTO(category, product, vendorProduct), new HttpHeaders(), HttpStatus.OK);
     }
 
+    @PostMapping(value = "/delete")
+    public ResponseEntity delete(@RequestBody String id) {
+        String[] s = id.split("-");
+        String vendorId = s[0];
+        String productId = s[1];
+        VendorProduct vendorProduct = null;
+        try {
+            vendorProduct = vendorProductService.findById(Long.parseLong(vendorId), Long.parseLong(productId));
+        }
+        catch(Exception e) {
+            return new ResponseEntity("Bad vendorProduct ID format is inputted.", new HttpHeaders(), HttpStatus.NOT_FOUND);
+        }
+        if(vendorProduct == null) {
+            return new ResponseEntity("No such vendorProduct exists.", new HttpHeaders(), HttpStatus.NOT_FOUND);
+        }
+        if(vendorProduct.getStatus().equals("deleted")) {
+            return new ResponseEntity("This vendorProduct is already deleted before.", new HttpHeaders(), HttpStatus.OK);
+
+        }
+        vendorProduct.setStatus("deleted");
+        vendorProductService.save(vendorProduct);
+        return new ResponseEntity("Given vendorProduct is deleted.", new HttpHeaders(), HttpStatus.OK);
+    }
+
     @GetMapping(value = "/findAllFullProducts")
     public ResponseEntity findAllFullProducts() {
         List<FullProductDTO> fullProductDTOList = new ArrayList<>();
@@ -328,6 +352,8 @@ public class VendorProductController {
         }
         return new ResponseEntity(fullProductDTOList, new HttpHeaders(), HttpStatus.OK);
     }
+
+
 }
 
 //    @GetMapping(value = "/getAllProductsDTOAdmin")

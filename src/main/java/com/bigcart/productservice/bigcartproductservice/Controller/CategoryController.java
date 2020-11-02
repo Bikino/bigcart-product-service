@@ -2,7 +2,9 @@ package com.bigcart.productservice.bigcartproductservice.Controller;
 
 import com.bigcart.productservice.bigcartproductservice.Model.Category;
 
+import com.bigcart.productservice.bigcartproductservice.Model.Product;
 import com.bigcart.productservice.bigcartproductservice.Services.CategoryService;
+import com.bigcart.productservice.bigcartproductservice.Services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,9 @@ public class CategoryController {
 
     @Autowired
     CategoryService categoryService;
+
+    @Autowired
+    ProductService productService;
 
     @GetMapping(value = "/")
     public ResponseEntity findAllCategories() {
@@ -95,10 +100,50 @@ public class CategoryController {
 //        return new ResponseEntity<Category>(updatedCategory, headers, HttpStatus.OK);
 //    }
 
-    @DeleteMapping(value = "/{CategoryId}")
-    public ResponseEntity deleteCategory(@PathVariable long CategoryId) {
+    @DeleteMapping(value = "/{categoryId}")
+    public ResponseEntity deleteCategory(@PathVariable String categoryId) {
+        if(categoryId == null) {
+            return new ResponseEntity("Null categoryId is inputted.", new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        }
+        Long cid = null;
+        try {
+            cid = Long.parseLong(categoryId);
+        }
+        catch(Exception e) {
+            return new ResponseEntity("Bad category id format inputted", new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        }
+        Category category = categoryService.findById(cid);
+        if(category == null) {
+            return new ResponseEntity("Inputted category does not exist.", new HttpHeaders(), HttpStatus.BAD_REQUEST);
 
-        return new ResponseEntity(categoryService.delete(CategoryId) ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+        }
+        if(category.getParentCategoryId() == null) {
+            Product product = productService.findByCategoryId(cid);
+            if(product == null) {
+                for(Category c : categoryService.findAllByParentCategoryId(cid)) {
+                    product = productService.findByCategoryId(c.getCategoryId());
+                }
+                if(product == null) {
+                    categoryService.delete(cid);
+                    return new ResponseEntity("Category is deleted.", new HttpHeaders(), HttpStatus.OK);
+                }
+                else {
+                    return new ResponseEntity("Can not delete this category. It includes subcategories which have products registered. ", new HttpHeaders(), HttpStatus.OK);
+                }
+            }
+            else {
+                return new ResponseEntity("Can not delete this category. It includes products registered. ", new HttpHeaders(), HttpStatus.OK);
+            }
+        }
+        else {
+            Product product = productService.findByCategoryId(cid);
+            if(product == null) {
+                categoryService.delete(cid);
+                return new ResponseEntity("Category is deleted.", new HttpHeaders(), HttpStatus.OK);
+            }
+            else {
+                return new ResponseEntity("Can not delete this category. It includes products registered. ", new HttpHeaders(), HttpStatus.OK);
+            }
+        }
     }
-
 }
