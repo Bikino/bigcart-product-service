@@ -46,6 +46,8 @@ public class ProductController {
         return new ResponseEntity<Product>(product, headers, HttpStatus.CREATED);
     }
 
+
+
     @PutMapping(value = "/update")
     public ResponseEntity<Product> updateProduct(@RequestBody Product product) {
 
@@ -128,11 +130,9 @@ public class ProductController {
     }
 
     // Return actual image of a product
-    @GetMapping(value = "/image", produces = MediaType.IMAGE_JPEG_VALUE)
-    public @ResponseBody
-    byte[] getImageWithMediaType(@RequestBody String imageUrl) throws IOException {
-        InputStream in = getClass()
-                .getResourceAsStream("/uploads/" + imageUrl);
+    @PostMapping(value = "/image", produces = MediaType.IMAGE_JPEG_VALUE)
+    public @ResponseBody byte[] getImageWithMediaType(@RequestBody String imageUrl) throws IOException {
+        InputStream in = getClass().getResourceAsStream("/uploads/" + imageUrl);
         if (in == null) {
             throw new IOException("Image with the URL: " + imageUrl + " does not exist.");
         }
