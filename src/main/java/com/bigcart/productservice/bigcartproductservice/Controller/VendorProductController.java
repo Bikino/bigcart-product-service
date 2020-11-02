@@ -1,9 +1,6 @@
 package com.bigcart.productservice.bigcartproductservice.Controller;
 
-import com.bigcart.productservice.bigcartproductservice.DTO.ApproveProductDTO;
-import com.bigcart.productservice.bigcartproductservice.DTO.FullProductDTO;
-import com.bigcart.productservice.bigcartproductservice.DTO.ProductForAdminDTO;
-import com.bigcart.productservice.bigcartproductservice.DTO.ProductVendorDTO;
+import com.bigcart.productservice.bigcartproductservice.DTO.*;
 import com.bigcart.productservice.bigcartproductservice.Model.Category;
 import com.bigcart.productservice.bigcartproductservice.Model.Product;
 import com.bigcart.productservice.bigcartproductservice.Model.VendorProduct;
@@ -15,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -143,6 +141,8 @@ public class VendorProductController {
 
         List<Product> productList = productService.findAll();
 
+        RestTemplate restTemplate = new RestTemplate();
+
         for (VendorProduct vendorProduct : vendorProductList) {
             ProductVendorDTO productVendorDTO = new ProductVendorDTO();
             Product product = productService.findById(vendorProduct.getProductId());
@@ -157,8 +157,19 @@ public class VendorProductController {
             productVendorDTO.setRequestDate(vendorProduct.getRequestDate());
             productVendorDTO.setApprovalDate(vendorProduct.getApprovalDate());
             productVendorDTO.setModificationDate(vendorProduct.getModificationDate());
-            // Pending to get requested function
-            productVendorDTO.setVendorName("Microsoft");
+
+            String vendorId = vendorProduct.getVendorId().toString();
+            VendorNameDTO v = null;
+
+            try {
+                v = restTemplate.getForObject("http://localhost:9988/vendor/" + vendorId, VendorNameDTO.class);
+            }
+            catch (Exception e) {
+                productVendorDTO.setVendorName("Unknown");
+                productVendorDTOList.add(productVendorDTO);
+                continue;
+            }
+            productVendorDTO.setVendorName(v.getCompanyName());
             productVendorDTOList.add(productVendorDTO);
         }
         // call to get vendor name
@@ -326,14 +337,13 @@ public class VendorProductController {
         VendorProduct vendorProduct = null;
         try {
             vendorProduct = vendorProductService.findById(Long.parseLong(vendorId), Long.parseLong(productId));
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             return new ResponseEntity("Bad vendorProduct ID format is inputted.", new HttpHeaders(), HttpStatus.NOT_FOUND);
         }
-        if(vendorProduct == null) {
+        if (vendorProduct == null) {
             return new ResponseEntity("No such vendorProduct exists.", new HttpHeaders(), HttpStatus.NOT_FOUND);
         }
-        if(vendorProduct.getStatus().equals("deleted")) {
+        if (vendorProduct.getStatus().equals("deleted")) {
             return new ResponseEntity("This vendorProduct is already deleted before.", new HttpHeaders(), HttpStatus.OK);
 
         }
@@ -345,7 +355,7 @@ public class VendorProductController {
     @GetMapping(value = "/findAllFullProducts")
     public ResponseEntity findAllFullProducts() {
         List<FullProductDTO> fullProductDTOList = new ArrayList<>();
-        for(VendorProduct vendorProduct : vendorProductService.findAll()) {
+        for (VendorProduct vendorProduct : vendorProductService.findAll()) {
             Product product = productService.findById(vendorProduct.getProductId());
             Category category = product.getCategory();
             fullProductDTOList.add(new FullProductDTO(category, product, vendorProduct));
@@ -353,8 +363,21 @@ public class VendorProductController {
         return new ResponseEntity(fullProductDTOList, new HttpHeaders(), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/test")
+    public ResponseEntity test() {
+        int i =5;
+        RestTemplate restTemplate = new RestTemplate();
+        VendorNameDTO v = restTemplate.getForObject("http://localhost:9988/vendor/1", VendorNameDTO.class);
+
+        return new ResponseEntity("", new HttpHeaders(), HttpStatus.OK);
+    }
 
 }
+
+
+
+
+
 
 //    @GetMapping(value = "/getAllProductsDTOAdmin")
 //    public ResponseEntity getAllProductsDTOAdmin(@RequestBody List<ApproveProductDTO> approveProductDTOList) {
