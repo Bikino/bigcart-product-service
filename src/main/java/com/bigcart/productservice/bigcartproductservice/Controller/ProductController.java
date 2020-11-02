@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("product")
 public class ProductController {
     public static String uploadDirectory = System.getProperty("user.dir") + "/bigcart-product-service/src/main/resources/uploads";
 
@@ -45,8 +45,6 @@ public class ProductController {
 
         return new ResponseEntity<Product>(product, headers, HttpStatus.CREATED);
     }
-
-
 
     @PutMapping(value = "/update")
     public ResponseEntity<Product> updateProduct(@RequestBody Product product) {

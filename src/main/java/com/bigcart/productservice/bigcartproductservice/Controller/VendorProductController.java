@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
-@RequestMapping("/productvendors")
+@RequestMapping("vendorproduct")
 public class VendorProductController {
     @Autowired
     VendorProductService vendorProductService;
@@ -42,11 +42,11 @@ public class VendorProductController {
         return new ResponseEntity<List<VendorProduct>>(pvList, new HttpHeaders(), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{productId}/{vendorId}")
-    public ResponseEntity getProductVendorById(@PathVariable Long productId, @PathVariable Long vendorId) {
-        VendorProduct pv = vendorProductService.findById(productId, vendorId);
+    @GetMapping(value = "/{vendorId}/{productId}")
+    public ResponseEntity getProductVendorById(@PathVariable Long vendorId, @PathVariable Long productId) {
+        VendorProduct pv = vendorProductService.findById(vendorId, productId);
         if (pv == null) {
-            return new ResponseEntity("Product vendor doesn't exist.", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("Vendor product doesn't exist.", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity(pv, new HttpHeaders(), HttpStatus.OK);
     }
@@ -54,32 +54,42 @@ public class VendorProductController {
     @PostMapping(value = "/")
     public ResponseEntity addProductRequest(@RequestBody FullProductDTO fullProductDTO) {
 
-        //create product
-        Product product = new Product();
-        product.setName(fullProductDTO.getName());
-        product.setSpecifications(fullProductDTO.getSpecs());
-        product.setDescription(fullProductDTO.getDescription());
-
-        //set category
-        product.setCategory(categoryService.findById(fullProductDTO.getCategoryId()));
-        Product p = productService.addProduct(product);
-
-        //create product vendor
-        VendorProduct vendorProduct = new VendorProduct();
-        vendorProduct.setProductId(p.getProductId());
-        vendorProduct.setPrice(fullProductDTO.getPrice());
-        vendorProduct.setQuantity(fullProductDTO.getQty());
-        vendorProduct.setStatus(fullProductDTO.getStatus());
-        vendorProduct.setImageUrl(fullProductDTO.getImageUrl());
-//        vendorProduct.setReviews(new ArrayList<>());
-        vendorProduct.setVendorId(fullProductDTO.getVendorId());
-        vendorProduct.setStatus("Pending");
-        vendorProduct.setImageUrl(fullProductDTO.getImageUrl());
-        vendorProduct.setRequestDate(LocalDateTime.now());
-
+        Product product = fullProductDTO.getProduct();
+        productService.addProduct(product);
+        Category category = fullProductDTO.getCategory();
+        categoryService.save(category);
+        VendorProduct vendorProduct = fullProductDTO.getVendorProduct();
+        vendorProduct.setStatus("pending");
         vendorProductService.save(vendorProduct);
-
         return new ResponseEntity("Product added for admin review.", new HttpHeaders(), HttpStatus.CREATED);
+//
+//
+//
+//        //create product
+//        Product product = new Product();
+//        product.setName(fullProductDTO.getProductName());
+//        product.setSpecifications(fullProductDTO.getSpecifications());
+//        product.setDescription(fullProductDTO.getDescription());
+//
+//        //set category
+//        product.setCategory(categoryService.findById(fullProductDTO.getCategoryId()));
+//        Product p = productService.addProduct(product);
+//
+//        //create product vendor
+//        VendorProduct vendorProduct = new VendorProduct();
+//        vendorProduct.setProductId(p.getProductId());
+//        vendorProduct.setPrice(fullProductDTO.getPrice());
+//        vendorProduct.setQuantity(fullProductDTO.getQuantity());
+//        vendorProduct.setStatus(fullProductDTO.getStatus());
+//        vendorProduct.setImageUrl(fullProductDTO.getImageUrl());
+////      vendorProduct.setReviews(new ArrayList<>());
+//        vendorProduct.setVendorId(fullProductDTO.getVendorId());
+//        vendorProduct.setStatus("Pending");
+//        vendorProduct.setImageUrl(fullProductDTO.getImageUrl());
+//        vendorProduct.setRequestDate(LocalDateTime.now());
+//
+//        vendorProductService.save(vendorProduct);
+
     }
 
     @PostMapping(value = "/sellsameproduct")
@@ -278,10 +288,9 @@ public class VendorProductController {
             }
             if (approveProductDTO.getApprovalCode() == 1) {
                 vendorProduct.setStatus("approved");
-            } else if(approveProductDTO.getApprovalCode() == 0) {
+            } else if (approveProductDTO.getApprovalCode() == 0) {
                 vendorProduct.setStatus("declined");
-            }
-            else {
+            } else {
                 return new ResponseEntity("Improper approval code.", new HttpHeaders(), HttpStatus.OK);
             }
 
@@ -290,6 +299,37 @@ public class VendorProductController {
         return new ResponseEntity("ok", new HttpHeaders(), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/findFullProductById/{id}")
+    public ResponseEntity findFullProductById(@PathVariable String id) {
+        if (id == null || id.isEmpty()) {
+            return new ResponseEntity("Improper vendorProduct id.", new HttpHeaders(), HttpStatus.OK);
+        }
+
+        String[] s = id.split("-");
+        String vendorId = s[0];
+        String productId = s[1];
+
+        VendorProduct vendorProduct = vendorProductService.findById(Long.parseLong(vendorId), Long.parseLong(productId));
+        if (vendorProduct == null) {
+            return new ResponseEntity("No such product...", new HttpHeaders(), HttpStatus.OK);
+        }
+        Product product = productService.findById(vendorProduct.getProductId());
+        Category category = product.getCategory();
+        return new ResponseEntity(new FullProductDTO(category, product, vendorProduct), new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/findAllFullProducts")
+    public ResponseEntity findAllFullProducts() {
+        List<FullProductDTO> fullProductDTOList = new ArrayList<>();
+        for(VendorProduct vendorProduct : vendorProductService.findAll()) {
+            Product product = productService.findById(vendorProduct.getProductId());
+            Category category = product.getCategory();
+            fullProductDTOList.add(new FullProductDTO(category, product, vendorProduct));
+        }
+        return new ResponseEntity(fullProductDTOList, new HttpHeaders(), HttpStatus.OK);
+    }
+}
+
 //    @GetMapping(value = "/getAllProductsDTOAdmin")
 //    public ResponseEntity getAllProductsDTOAdmin(@RequestBody List<ApproveProductDTO> approveProductDTOList) {
 //
@@ -297,5 +337,3 @@ public class VendorProductController {
 //                productToProductDTOList(productVendorService.findAll()),
 //                new HttpHeaders(), HttpStatus.OK);
 //    }
-
-}

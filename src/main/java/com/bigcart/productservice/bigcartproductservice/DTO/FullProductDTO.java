@@ -1,110 +1,84 @@
 package com.bigcart.productservice.bigcartproductservice.DTO;
 
+import com.bigcart.productservice.bigcartproductservice.Model.Category;
+import com.bigcart.productservice.bigcartproductservice.Model.Product;
+import com.bigcart.productservice.bigcartproductservice.Model.VendorProduct;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
-// brand new product
+//@Id
+//@JsonIgnore
+//@Column(name = "product_id")
+//@GeneratedValue(strategy = GenerationType.IDENTITY)
+//private Long productId;
+//@Column(insertable = false,updatable = false)
+//private Long categoryId;
+//private String name;
+//private String description;
+//private String specifications;
+
+//Relations
+//@ManyToOne
+//@JsonIgnore
+//@JoinColumn(name = "categoryId")
+//private Category category;
+//
+//@OneToMany()
+//@JsonIgnore
+//@JoinColumn(name = "product_id",referencedColumnName = "product_id")
+//private List<VendorProduct> VendorProduct = new ArrayList<>();
+//@Id
+//private Long vendorId;
+//@Id
+//@Column(name = "product_id")
+//private Long productId;
+//
+//private LocalDateTime requestDate;
+//private LocalDateTime approvalDate;
+//private LocalDateTime modificationDate;
+//private Integer quantity;
+//private Float price;
+//private String status;
+//private String imageUrl;
+
 public class FullProductDTO {
-    private String name;
-    private Long categoryId;
-    private String description;
-    private String specs;
-    private String status;
-    private String imageUrl;
-    private Long vendorId;
-    private LocalDateTime dateAdded;
-    private LocalDateTime dateModified;
-    private Integer qty;
-    private Float price;
+
+    private Category category;
+    private Product product;
+    private VendorProduct vendorProduct;
 
     public FullProductDTO() {
-
     }
 
-    public String getName() {
-        return name;
+    public FullProductDTO(Category category, Product product, VendorProduct vendorProduct) {
+        this.category = category;
+        this.product = product;
+        this.vendorProduct = vendorProduct;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Category getCategory() {
+        return category;
     }
 
-    public Long getCategoryId() {
-        return categoryId;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
+    public Product getProduct() {
+        return product;
     }
 
-    public String getDescription() {
-        return description;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public VendorProduct getVendorProduct() {
+        return vendorProduct;
     }
 
-    public String getSpecs() {
-        return specs;
-    }
-
-    public void setSpecs(String specs) {
-        this.specs = specs;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public Long getVendorId() {
-        return vendorId;
-    }
-
-    public void setVendorId(Long vendorId) {
-        this.vendorId = vendorId;
-    }
-
-    public LocalDateTime getDateAdded() {
-        return dateAdded;
-    }
-
-    public void setDateAdded(LocalDateTime dateAdded) {
-        this.dateAdded = dateAdded;
-    }
-
-    public LocalDateTime getDateModified() {
-        return dateModified;
-    }
-
-    public void setDateModified(LocalDateTime dateModified) {
-        this.dateModified = dateModified;
-    }
-
-    public Integer getQty() {
-        return qty;
-    }
-
-    public void setQty(Integer qty) {
-        this.qty = qty;
-    }
-
-    public Float getPrice() {
-        return price;
-    }
-
-    public void setPrice(Float price) {
-        this.price = price;
+    public void setVendorProduct(VendorProduct vendorProduct) {
+        this.vendorProduct = vendorProduct;
     }
 }

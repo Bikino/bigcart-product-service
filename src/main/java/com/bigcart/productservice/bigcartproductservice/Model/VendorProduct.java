@@ -19,15 +19,13 @@ public class VendorProduct {
     private Integer quantity;
     private Float price;
     private String status;
+    private String imageUrl;
 
     public VendorProduct() {
     }
 
-    private String imageUrl;
-
 //    @OneToMany(mappedBy = "productVendor")
 //    private List<Review> reviews = new ArrayList<>();
-
 
     public void setPrice(Float price) {
         this.price = price;
