@@ -1,20 +1,18 @@
 package com.bigcart.productservice.bigcartproductservice.Services;
 
 import com.bigcart.productservice.bigcartproductservice.Model.Product;
+import com.bigcart.productservice.bigcartproductservice.Model.VendorProduct;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 public interface ProductService {
-    public Product addProduct(Product product);
+    Product addProduct(Product product);
+    Product findById(long productId) ;
+    List<Product> findAll();
+    Product update(Product product);
+    Boolean delete(long productId);
+    Product findByCategoryId(Long categoryId);
 
-    public Product findById(long productId) ;
 
-    public List<Product> findAll();
-
-    public Product update(Product product);
-
-    public Boolean delete(long productId);
-
-    public Product findByCategoryId(Long categoryId);
 }

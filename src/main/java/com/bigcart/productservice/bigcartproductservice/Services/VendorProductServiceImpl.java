@@ -153,10 +153,6 @@ public class VendorProductServiceImpl implements VendorProductService {
 
     @Override
     public VendorProduct save(VendorProduct vendorProduct) {
-        VendorProduct pv = vendorProductRepository.findById(new VendorProductCKey(vendorProduct.getVendorId(), vendorProduct.getProductId())).orElse(null);
-        if (pv == null) {
-            return null;
-        }
         return vendorProductRepository.save(vendorProduct);
     }
 

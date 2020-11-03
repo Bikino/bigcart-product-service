@@ -5,6 +5,7 @@ import com.bigcart.productservice.bigcartproductservice.Model.Category;
 import com.bigcart.productservice.bigcartproductservice.Model.Product;
 import com.bigcart.productservice.bigcartproductservice.Model.VendorProduct;
 import com.bigcart.productservice.bigcartproductservice.Services.CategoryService;
+import com.bigcart.productservice.bigcartproductservice.Services.ProductImageService;
 import com.bigcart.productservice.bigcartproductservice.Services.ProductService;
 import com.bigcart.productservice.bigcartproductservice.Services.VendorProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -28,6 +30,9 @@ public class VendorProductController {
 
     @Autowired
     CategoryService categoryService;
+
+    @Autowired
+    ProductImageService productImageService;
 
 
     @GetMapping(value = "/")
@@ -50,45 +55,79 @@ public class VendorProductController {
         return new ResponseEntity(pv, new HttpHeaders(), HttpStatus.OK);
     }
 
+    // adding product from scratch when there is no same product
     @PostMapping(value = "/")
-    public ResponseEntity addProductRequest(@RequestBody FullProductDTO fullProductDTO) {
+    public ResponseEntity addProductRequest(@RequestBody Map<String, String> request) {
 
-        Product product = fullProductDTO.getProduct();
-        productService.addProduct(product);
-        Category category = fullProductDTO.getCategory();
-        categoryService.save(category);
-        VendorProduct vendorProduct = fullProductDTO.getVendorProduct();
+        String categoryId = request.get("categoryId");
+        String name = request.get("name");
+        String description = request.get("description");
+        String specifications = request.get("specifications");
+        String quantity = request.get("quantity");
+        String price = request.get("price");
+        String imageUrl = request.get("imageUrl");
+        String vendorId = request.get("vendorId");
+
+        if( categoryId == null || name == null || description == null || specifications == null
+        || quantity == null || price == null || imageUrl == null || vendorId == null) {
+            return new ResponseEntity("Required product information is not inputted.", new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        }
+
+        Integer qty;
+        Float prc;
+        Long cId;
+        Long vId;
+
+        try {
+            qty = Integer.parseInt(quantity);
+            prc = Float.parseFloat(price);
+            cId = Long.parseLong(categoryId);
+            vId = Long.parseLong(vendorId);
+        }
+        catch (Exception e) {
+            return new ResponseEntity("Quantity and price should be numeric.", new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        }
+
+        Category category = categoryService.findById(cId);
+        if(category == null) {
+            return new ResponseEntity("Selected category doesn't exist.", new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        }
+
+        InputStream in = getClass().getResourceAsStream("/uploads/" + imageUrl);
+        if(in == null) {
+            return new ResponseEntity("Invalid image url is inputted.", new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        }
+
+        Product product = new Product();
+        product.setName(name);
+        product.setDescription(description);
+        product.setSpecifications(specifications);
+        product.setCategoryId(cId);
+
+        Product p = productService.addProduct(product);
+        if (p == null) {
+            return new ResponseEntity("Internal service problem.", new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        }
+
+        VendorProduct vendorProduct = new VendorProduct();
+        vendorProduct.setImageUrl(imageUrl);
         vendorProduct.setStatus("pending");
-        vendorProductService.save(vendorProduct);
-        return new ResponseEntity("Product added for admin review.", new HttpHeaders(), HttpStatus.CREATED);
-//
-//
-//
-//        //create product
-//        Product product = new Product();
-//        product.setName(fullProductDTO.getProductName());
-//        product.setSpecifications(fullProductDTO.getSpecifications());
-//        product.setDescription(fullProductDTO.getDescription());
-//
-//        //set category
-//        product.setCategory(categoryService.findById(fullProductDTO.getCategoryId()));
-//        Product p = productService.addProduct(product);
-//
-//        //create product vendor
-//        VendorProduct vendorProduct = new VendorProduct();
-//        vendorProduct.setProductId(p.getProductId());
-//        vendorProduct.setPrice(fullProductDTO.getPrice());
-//        vendorProduct.setQuantity(fullProductDTO.getQuantity());
-//        vendorProduct.setStatus(fullProductDTO.getStatus());
-//        vendorProduct.setImageUrl(fullProductDTO.getImageUrl());
-////      vendorProduct.setReviews(new ArrayList<>());
-//        vendorProduct.setVendorId(fullProductDTO.getVendorId());
-//        vendorProduct.setStatus("Pending");
-//        vendorProduct.setImageUrl(fullProductDTO.getImageUrl());
-//        vendorProduct.setRequestDate(LocalDateTime.now());
-//
-//        vendorProductService.save(vendorProduct);
+        vendorProduct.setQuantity(qty);
+        vendorProduct.setRequestDate(LocalDateTime.now());
+        vendorProduct.setPrice(prc);
+        vendorProduct.setVendorId(vId);
 
+        vendorProduct.setProductId(p.getProductId());
+
+        vendorProduct = vendorProductService.save(vendorProduct);
+
+        product.addVendorProduct(vendorProduct);
+
+        // save final changes to hibernate
+        vendorProductService.save(vendorProduct);
+        productService.addProduct(product);
+
+        return new ResponseEntity("Product added for admin review.", new HttpHeaders(), HttpStatus.OK);
     }
 
     @PostMapping(value = "/sellsameproduct")
@@ -354,11 +393,6 @@ public class VendorProductController {
         }
         return new ResponseEntity(fullProductDTOList, new HttpHeaders(), HttpStatus.OK);
     }
-
-
-
-
-
 
     // only for testing rest template call
     @GetMapping(value = "/test")

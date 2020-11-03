@@ -9,4 +9,5 @@ import java.util.List;
 public interface VendorProductRepository extends JpaRepository<VendorProduct, VendorProductCKey> {
     VendorProduct findByVendorId(Long id);
     List<VendorProduct> findAllByVendorId(Long id);
+
 }

@@ -33,7 +33,7 @@ public class Product {
     @OneToMany()
     @JsonIgnore
     @JoinColumn(name = "product_id",referencedColumnName = "product_id")
-    private List<VendorProduct> VendorProduct = new ArrayList<>();
+    private List<VendorProduct> vendorProductList = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -77,11 +77,19 @@ public class Product {
     }
 
     public List<VendorProduct> getProductVendor() {
-        return VendorProduct;
+        return vendorProductList;
     }
 
     public void setProductVendor(List<VendorProduct> vendorProduct) {
-        VendorProduct = vendorProduct;
+        vendorProductList = vendorProduct;
+    }
+
+    public void addVendorProduct(VendorProduct vendorProduct) {
+        vendorProductList.add(vendorProduct);
+    }
+
+    public void removeVendorProduct(VendorProduct vendorProduct) {
+        vendorProductList.remove(vendorProduct);
     }
 
     public Long getCategoryId() {

@@ -1,6 +1,7 @@
 package com.bigcart.productservice.bigcartproductservice.Services;
 
 import com.bigcart.productservice.bigcartproductservice.Model.Product;
+import com.bigcart.productservice.bigcartproductservice.Model.VendorProduct;
 import com.bigcart.productservice.bigcartproductservice.Repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
     public Product findByCategoryId(Long categoryId) {
         return productRepository.findByCategoryId(categoryId);
     }
-    
+
 
 //    @Override
 //    public Boolean delete(long productId) {
