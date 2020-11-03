@@ -131,12 +131,14 @@ public class ProductController {
 
     // Return actual image of a product
     @PostMapping(value = "/image", produces = MediaType.IMAGE_JPEG_VALUE)
-    public byte[] getImageWithMediaType(@RequestBody String imageUrl) throws IOException {
+    public ResponseEntity getImageWithMediaType(@RequestBody String imageUrl) throws IOException {
         InputStream in = getClass().getResourceAsStream("/uploads/" + imageUrl);
         if (in == null) {
-            throw new IOException("Image with the URL: " + imageUrl + " does not exist.");
+            //throw new IOException("Image with the URL: " + imageUrl + " does not exist.");
+            return new ResponseEntity("", new HttpHeaders(), HttpStatus.NOT_FOUND);
+
         }
-        return IOUtils.toByteArray(in);
+        return new ResponseEntity(IOUtils.toByteArray(in), new HttpHeaders(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/vendorproductlist")

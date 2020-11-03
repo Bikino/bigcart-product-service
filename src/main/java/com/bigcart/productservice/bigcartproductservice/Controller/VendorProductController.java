@@ -29,7 +29,7 @@ public class VendorProductController {
     @Autowired
     CategoryService categoryService;
 
-    
+
     @GetMapping(value = "/")
     public ResponseEntity<List<VendorProduct>> getAllProductVendors() {
 
@@ -355,6 +355,12 @@ public class VendorProductController {
         return new ResponseEntity(fullProductDTOList, new HttpHeaders(), HttpStatus.OK);
     }
 
+
+
+
+
+
+    // only for testing rest template call
     @GetMapping(value = "/test")
     public ResponseEntity test() {
         int i =5;
@@ -363,13 +369,7 @@ public class VendorProductController {
 
         return new ResponseEntity("", new HttpHeaders(), HttpStatus.OK);
     }
-
 }
-
-
-
-
-
 
 //    @GetMapping(value = "/getAllProductsDTOAdmin")
 //    public ResponseEntity getAllProductsDTOAdmin(@RequestBody List<ApproveProductDTO> approveProductDTOList) {
