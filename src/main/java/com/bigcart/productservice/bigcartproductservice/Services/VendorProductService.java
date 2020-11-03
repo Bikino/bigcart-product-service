@@ -1,6 +1,7 @@
 package com.bigcart.productservice.bigcartproductservice.Services;
 
 import com.bigcart.productservice.bigcartproductservice.DTO.ProductForAdminDTO;
+import com.bigcart.productservice.bigcartproductservice.Model.Email;
 import com.bigcart.productservice.bigcartproductservice.Model.VendorProduct;
 
 import java.util.List;
@@ -23,6 +24,8 @@ public interface VendorProductService {
     VendorProduct save(VendorProduct vendorProduct);
     VendorProduct update(VendorProduct vendorProduct);
     VendorProduct delete(VendorProduct vendorProduct);
+
+//    Email sendEmail(Email email);
 
 
 

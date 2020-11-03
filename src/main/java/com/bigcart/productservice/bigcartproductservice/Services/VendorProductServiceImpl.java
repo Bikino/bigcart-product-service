@@ -2,10 +2,7 @@ package com.bigcart.productservice.bigcartproductservice.Services;
 
 import com.bigcart.productservice.bigcartproductservice.DTO.ProductForAdminDTO;
 import com.bigcart.productservice.bigcartproductservice.DTO.VendorNameDTO;
-import com.bigcart.productservice.bigcartproductservice.Model.Category;
-import com.bigcart.productservice.bigcartproductservice.Model.Product;
-import com.bigcart.productservice.bigcartproductservice.Model.VendorProduct;
-import com.bigcart.productservice.bigcartproductservice.Model.VendorProductCKey;
+import com.bigcart.productservice.bigcartproductservice.Model.*;
 import com.bigcart.productservice.bigcartproductservice.Repository.CategoryRepository;
 import com.bigcart.productservice.bigcartproductservice.Repository.VendorProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -168,6 +165,21 @@ public class VendorProductServiceImpl implements VendorProductService {
     public VendorProduct delete(VendorProduct vendorProduct) {
         return null;
     }
+
+//    @Override
+//    public Email sendEmail(Email emailToSend) {
+//        RestTemplate restTemplate = new RestTemplate();
+//        Email emailReceived;
+//        try {
+//            emailReceived = restTemplate.getForObject("http://localhost:9988/vendor/" + vendorId, VendorNameDTO.class);
+//        }
+//        catch (Exception e) {
+//            return null;
+//        }
+//        return v.getCompanyName();
+//
+//        return null;
+//    }
 
     //    @Override
 //    public boolean removeProductV(ListItmeDTO items) {
