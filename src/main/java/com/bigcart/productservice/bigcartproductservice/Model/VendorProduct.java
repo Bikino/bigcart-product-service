@@ -20,8 +20,12 @@ public class VendorProduct {
     private Float price;
     private String status;
     private String imageUrl;
+    double rating;
+    int ratingCount;
 
     public VendorProduct() {
+        rating = 0;
+        ratingCount = 0;
     }
 
 //    @OneToMany(mappedBy = "productVendor")
@@ -142,5 +146,21 @@ public class VendorProduct {
 
     public void setModificationDate(LocalDateTime dateModified) {
         this.modificationDate = dateModified;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public int getRatingCount() {
+        return ratingCount;
+    }
+
+    public void setRatingCount(int ratingCount) {
+        this.ratingCount = ratingCount;
     }
 }

@@ -25,6 +25,7 @@ public interface VendorProductService {
     VendorProduct update(VendorProduct vendorProduct);
     VendorProduct delete(VendorProduct vendorProduct);
 
+    void synchronizeRatings();
 //    Email sendEmail(Email email);
 
 

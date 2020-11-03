@@ -4,6 +4,7 @@ import com.bigcart.productservice.bigcartproductservice.DTO.ProductForAdminDTO;
 import com.bigcart.productservice.bigcartproductservice.DTO.VendorNameDTO;
 import com.bigcart.productservice.bigcartproductservice.Model.*;
 import com.bigcart.productservice.bigcartproductservice.Repository.CategoryRepository;
+import com.bigcart.productservice.bigcartproductservice.Repository.ReviewRepository;
 import com.bigcart.productservice.bigcartproductservice.Repository.VendorProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,9 @@ public class VendorProductServiceImpl implements VendorProductService {
 
     @Autowired
     CategoryRepository categoryRepository;
+
+    @Autowired
+    ReviewRepository reviewRepository;
 
     @Override
     public List<VendorProduct> findAll() {
@@ -164,6 +168,22 @@ public class VendorProductServiceImpl implements VendorProductService {
     @Override
     public VendorProduct delete(VendorProduct vendorProduct) {
         return null;
+    }
+
+    @Override
+    public void synchronizeRatings() {
+        List<VendorProduct> vendorProductList = vendorProductRepository.findAll();
+        for(VendorProduct vendorProduct : vendorProductList) {
+            List<Review> reviewList = reviewRepository.findAllByVendorProduct(vendorProduct);
+            int ratingCount = reviewList.size();
+            double ratingSum = 0;
+            for(Review review : reviewList) {
+                ratingSum += review.getRating();
+            }
+            vendorProduct.setRatingCount(ratingCount);
+            vendorProduct.setRating(ratingSum / ratingCount);
+            save(vendorProduct);
+        }
     }
 
 //    @Override
