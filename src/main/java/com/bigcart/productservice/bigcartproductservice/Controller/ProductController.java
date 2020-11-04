@@ -5,23 +5,18 @@ import com.bigcart.productservice.bigcartproductservice.Model.Product;
 import com.bigcart.productservice.bigcartproductservice.Model.ProductImage;
 import com.bigcart.productservice.bigcartproductservice.Services.ProductImageService;
 import com.bigcart.productservice.bigcartproductservice.Services.ProductService;
-import lombok.var;
+import com.bigcart.productservice.bigcartproductservice.util.Notifier;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ResourceUtils;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.imageio.ImageIO;
 import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +31,8 @@ public class ProductController {
     @Autowired
     ProductImageService productImageService;
 
+    @Autowired
+    Notifier notifier;
     @PostMapping(value = "/")
     public ResponseEntity<Product> addProduct(@RequestBody Product product) {
 
@@ -162,7 +159,7 @@ public class ProductController {
     }
 
     @PostMapping(value = "/productNames")
-    public ResponseEntity productNames(@RequestBody List<Long> idList) {
+    public ResponseEntity<List<String>> productNames(@RequestBody List<Long> idList) {
         List<String> productNameList = new ArrayList<>();
         for( Long id : idList) {
             Product product = productService.findById(id);
@@ -170,6 +167,6 @@ public class ProductController {
                 productNameList.add(product.getName());
             }
         }
-        return new ResponseEntity(productNameList, new HttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity<List<String>>(productNameList, new HttpHeaders(), HttpStatus.OK);
     }
 }

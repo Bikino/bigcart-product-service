@@ -8,6 +8,7 @@ import com.bigcart.productservice.bigcartproductservice.Services.CategoryService
 import com.bigcart.productservice.bigcartproductservice.Services.ProductImageService;
 import com.bigcart.productservice.bigcartproductservice.Services.ProductService;
 import com.bigcart.productservice.bigcartproductservice.Services.VendorProductService;
+import com.bigcart.productservice.bigcartproductservice.util.Notifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -34,7 +36,8 @@ public class VendorProductController {
     @Autowired
     ProductImageService productImageService;
 
-
+@Autowired
+    Notifier notifier;
     @GetMapping(value = "/")
     public ResponseEntity<List<VendorProduct>> getAllProductVendors() {
 
@@ -57,7 +60,7 @@ public class VendorProductController {
 
     // adding product from scratch when there is no same product
     @PostMapping(value = "/")
-    public ResponseEntity addProductRequest(@RequestBody Map<String, String> request) {
+    public ResponseEntity addProductRequest(@RequestBody Map<String, String> request) throws URISyntaxException {
 
         String categoryId = request.get("categoryId");
         String name = request.get("name");
@@ -126,6 +129,8 @@ public class VendorProductController {
         // save final changes to hibernate
         vendorProductService.save(vendorProduct);
         productService.addProduct(product);
+
+        notifier.notifyAdmins("New Product bending approval",product.getName() +"  Was Just added Please review.");
 
         return new ResponseEntity("Product added for admin review.", new HttpHeaders(), HttpStatus.OK);
     }
@@ -318,7 +323,7 @@ public class VendorProductController {
     }
 
     @PostMapping(value = "/approveProduct")
-    public ResponseEntity approveProduct(@RequestBody List<ApproveProductDTO> approveProductDTOList) {
+    public ResponseEntity approveProduct(@RequestBody List<ApproveProductDTO> approveProductDTOList) throws URISyntaxException {
 
         for (ApproveProductDTO approveProductDTO : approveProductDTOList) {
             String[] s = approveProductDTO.getVendorProductId().split("-");
@@ -337,6 +342,7 @@ public class VendorProductController {
             }
 
             vendorProductService.save(vendorProduct);
+            notifier.notifyStatusUpdate(vendorProduct.getProductId(),vendorProduct.getStatus());
         }
         return new ResponseEntity("ok", new HttpHeaders(), HttpStatus.OK);
     }
