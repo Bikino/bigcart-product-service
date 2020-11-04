@@ -28,7 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping("product")
 public class ProductController {
-    public static String uploadDirectory = System.getProperty("use") +"/bigcart-product-service/src/main/resources/uploads";
+    public static String uploadDirectory = System.getProperty("user.dir") + "/bigcart-product-service/src/main/resources/uploads";
 
     @Autowired
     ProductService productService;
