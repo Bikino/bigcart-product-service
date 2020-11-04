@@ -9,4 +9,5 @@ public interface ProductImageService {
     public ProductImage findById(Long id);
     public ProductImage save(ProductImage productImage);
     public void deleteById(Long id);
+    public void loadSampleImages ();
 }

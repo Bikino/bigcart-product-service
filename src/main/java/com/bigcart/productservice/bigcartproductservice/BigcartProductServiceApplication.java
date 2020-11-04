@@ -2,6 +2,7 @@ package com.bigcart.productservice.bigcartproductservice;
 
 import com.bigcart.productservice.bigcartproductservice.Controller.ProductController;
 import com.bigcart.productservice.bigcartproductservice.Model.VendorProduct;
+import com.bigcart.productservice.bigcartproductservice.Services.ProductImageService;
 import com.bigcart.productservice.bigcartproductservice.Services.ProductService;
 import com.bigcart.productservice.bigcartproductservice.Services.VendorProductService;
 import com.bigcart.productservice.bigcartproductservice.Services.VendorProductServiceImpl;
@@ -20,6 +21,8 @@ public class BigcartProductServiceApplication {
     @Autowired
     VendorProductService vendorProductService;
 
+    @Autowired
+    ProductImageService productImageService;
     public static void main(String[] args) {
         new File(ProductController.uploadDirectory).mkdir();
         SpringApplication.run(BigcartProductServiceApplication.class, args);
@@ -27,8 +30,10 @@ public class BigcartProductServiceApplication {
 
     @EventListener(ApplicationReadyEvent.class)
     public void doSomethingAfterStartup() {
-        System.out.println("HELLO WOOOOORLD! I AM STARTED.");
+
         vendorProductService.synchronizeRatings();
+        productImageService.loadSampleImages();
+
     }
 
 }

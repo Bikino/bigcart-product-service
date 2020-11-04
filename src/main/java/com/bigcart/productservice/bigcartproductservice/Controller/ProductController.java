@@ -28,7 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping("product")
 public class ProductController {
-    public static String uploadDirectory = System.getProperty("user.dir") + "/bigcart-product-service/src/main/resources/uploads";
+    public static String uploadDirectory = System.getProperty("user.dir")+"/images" ;//+ "/bigcart-product-service/src/main/resources/uploads";
 
     @Autowired
     ProductService productService;
@@ -136,6 +136,7 @@ public class ProductController {
     // Return actual image of a product
     @PostMapping(value = "/image", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity getImageWithMediaType(@RequestBody String imageUrl) throws IOException {
+
         File file = ResourceUtils.getFile(uploadDirectory +"/"+ imageUrl);//getFile("classpath");
         InputStream in = new FileInputStream(file);
         //inputStream in = getClass().getResourceAsStream("/uploads/" + imageUrl);
