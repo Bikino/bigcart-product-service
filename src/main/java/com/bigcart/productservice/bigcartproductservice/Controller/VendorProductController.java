@@ -168,10 +168,10 @@ public class VendorProductController {
         return new ResponseEntity<VendorProduct>(vendorProduct, headers, HttpStatus.CREATED);
     }
 
-//    @PostMapping("/remove")
-//    public void removeProducts(@RequestBody ListItmeDTO listDto) {
-//        productVendorService.removeProductV(listDto);
-//    }
+    @PostMapping("/remove")
+    public void removeProducts(@RequestBody ListItmeDTO listDto) {
+        vendorProductService.removeProductV(listDto);
+    }
 
     @GetMapping(value = "/findAllVendorProductsDTO")
     public ResponseEntity findAllVendorProductsDTOforVendor() {

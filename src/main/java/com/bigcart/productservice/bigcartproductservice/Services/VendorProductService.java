@@ -1,5 +1,6 @@
 package com.bigcart.productservice.bigcartproductservice.Services;
 
+import com.bigcart.productservice.bigcartproductservice.DTO.ListItmeDTO;
 import com.bigcart.productservice.bigcartproductservice.DTO.ProductForAdminDTO;
 import com.bigcart.productservice.bigcartproductservice.Model.Email;
 import com.bigcart.productservice.bigcartproductservice.Model.VendorProduct;
@@ -31,7 +32,7 @@ public interface VendorProductService {
 
 
 
-//    public boolean removeProductV(ListItmeDTO items);
+      public boolean removeProductV(ListItmeDTO items);
 //
 //    public ProductVendor editProductV(long productID, Product edit_product);
 //

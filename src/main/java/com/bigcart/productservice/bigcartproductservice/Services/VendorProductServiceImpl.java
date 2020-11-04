@@ -1,5 +1,7 @@
 package com.bigcart.productservice.bigcartproductservice.Services;
 
+import com.bigcart.productservice.bigcartproductservice.DTO.ItemDTO;
+import com.bigcart.productservice.bigcartproductservice.DTO.ListItmeDTO;
 import com.bigcart.productservice.bigcartproductservice.DTO.ProductForAdminDTO;
 import com.bigcart.productservice.bigcartproductservice.DTO.VendorNameDTO;
 import com.bigcart.productservice.bigcartproductservice.Model.*;
@@ -198,16 +200,16 @@ public class VendorProductServiceImpl implements VendorProductService {
 //    }
 
     //    @Override
-//    public boolean removeProductV(ListItmeDTO items) {
-//
-//        for (ItemDTO i:items.getList()
-//             ) {
-//
-//            ProductVendorCKey key= new ProductVendorCKey(i.getVendorId(),i.getItemtId());
-//            ProductVendor PV=  vendorProductRepository.findById(key).get();
-//            PV.decQty(i.getQuantity());
-//            vendorProductRepository.save(PV);
-//        }
-//        return false;
-//    }
+    public boolean removeProductV(ListItmeDTO items) {
+
+        for (ItemDTO i:items.getList()
+             ) {
+
+            VendorProductCKey key= new VendorProductCKey(i.getVendorId(),i.getItemtId());
+            VendorProduct PV=  vendorProductRepository.findById(key).get();
+            PV.decQty(i.getQuantity());
+            vendorProductRepository.save(PV);
+        }
+        return false;
+    }
 }
