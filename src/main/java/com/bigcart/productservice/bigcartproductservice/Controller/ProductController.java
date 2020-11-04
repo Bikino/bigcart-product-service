@@ -5,27 +5,30 @@ import com.bigcart.productservice.bigcartproductservice.Model.Product;
 import com.bigcart.productservice.bigcartproductservice.Model.ProductImage;
 import com.bigcart.productservice.bigcartproductservice.Services.ProductImageService;
 import com.bigcart.productservice.bigcartproductservice.Services.ProductService;
+import lombok.var;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ResourceUtils;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("product")
 public class ProductController {
-    public static String uploadDirectory = System.getProperty("user.dir") + "/bigcart-product-service/src/main/resources/uploads";
+    public static String uploadDirectory = System.getProperty("user.dir") + "/src/main/resources/uploads";
 
     @Autowired
     ProductService productService;
@@ -106,6 +109,7 @@ public class ProductController {
 
     @PostMapping(value = "uploadProductImage")
     public ResponseEntity<String> uploadProductImage(@RequestParam("file") MultipartFile file) {
+
         String productImageId = productImageService.save(new ProductImage()).getId().toString();
 
         System.out.println(file.getOriginalFilename());
@@ -132,7 +136,9 @@ public class ProductController {
     // Return actual image of a product
     @PostMapping(value = "/image", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity getImageWithMediaType(@RequestBody String imageUrl) throws IOException {
-        InputStream in = getClass().getResourceAsStream("/uploads/" + imageUrl);
+        File file = ResourceUtils.getFile(uploadDirectory +"/"+ imageUrl);//getFile("classpath");
+        InputStream in = new FileInputStream(file);
+        //inputStream in = getClass().getResourceAsStream("/uploads/" + imageUrl);
         if (in == null) {
             //throw new IOException("Image with the URL: " + imageUrl + " does not exist.");
             return new ResponseEntity("", new HttpHeaders(), HttpStatus.NOT_FOUND);
