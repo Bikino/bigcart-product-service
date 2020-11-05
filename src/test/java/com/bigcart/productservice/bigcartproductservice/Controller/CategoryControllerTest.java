@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.*;
 
@@ -14,6 +17,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
+@SpringBootTest
 class CategoryControllerTest {
 
 
@@ -25,30 +29,30 @@ class CategoryControllerTest {
     @Test
     void findAllCategories() {
 
+        Category cat = new Category();
+        List<Category> cats= new ArrayList<>();
+        cats.add(cat);
+        when(categoryService.findAll ()).thenReturn(cats);
+        conroller.findAllCategories();
+        Mockito.verify(categoryService, times(1)).findAll();
+
+
 
 
     }
 
-    @Test
-    void addCategory() {
-    }
-
-    @Test
-    void changeCategoryName() {
-    }
 
     @Test
     void getCategory() {
 
 
         Category cat = new Category();
-        cat =categoryService.findById(1);
-        assertEquals(cat,categoryService.findById( 1));
+        when(categoryService.findById(anyLong())).thenReturn(cat);
+        conroller.getCategory(1l);
+        Mockito.verify(categoryService, times(1)).findById(1l);
 
 
     }
 
-    @Test
-    void deleteCategory() {
-    }
+
 }
