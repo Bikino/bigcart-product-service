@@ -335,7 +335,9 @@ public class VendorProductController {
             fullProductDTOList.add(new FullProductDTO(category, product, vendorProduct));
         }
 
-        fullProductDTOList=   fullProductDTOList.stream().filter(p -> {
+        fullProductDTOList=   fullProductDTOList.stream()
+                .filter(p->{ return p.getVendorProduct().getStatus().equals("approved");})
+                .filter(p -> {
             if (vendorId != null) {
             return p.getVendorProduct().getVendorId().toString().equals( vendorId);
             }
@@ -431,6 +433,9 @@ public class VendorProductController {
             Category category = product.getCategory();
             fullProductDTOList.add(new FullProductDTO(category, product, vendorProduct));
         }
+        fullProductDTOList=   fullProductDTOList.stream()
+                .filter(p->{ return p.getVendorProduct().getStatus().equals("approved");})
+                .collect(Collectors.toList());
         return new ResponseEntity(fullProductDTOList, new HttpHeaders(), HttpStatus.OK);
     }
 

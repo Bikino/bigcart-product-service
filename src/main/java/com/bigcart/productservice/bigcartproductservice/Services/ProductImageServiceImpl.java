@@ -51,7 +51,7 @@ public class ProductImageServiceImpl implements ProductImageService {
             e.printStackTrace();
         }
 
-        for (int i =1;i<4;i++) {
+        for (int i =1;i<11;i++) {
             String fullPath = new StringBuilder(ProductController.uploadDirectory).append("/").
                     append(i).append(".").append("jpg").toString();
             try {
