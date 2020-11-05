@@ -1,16 +1,16 @@
-insert into category(name) values ('electronic')
-insert into category(name) values ('kitchen')
-insert into category(name) values ('fashion')
-insert into category(name) values ('sports')
+--insert into category(name) values ('electronic')
+--insert into category(name) values ('kitchen')
+--insert into category(name) values ('fashion')
+--insert into category(name) values ('sports')
 
 
-insert into category(name, parent_category_id) values ('laptops', 1)
-insert into category(name, parent_category_id) values ('microwaves', 2)
-insert into category(name, parent_category_id) values ('shoes', 3)
-insert into category(name, parent_category_id) values ('Headphones', 1)
-insert into category(name, parent_category_id) values ('Bikes', 4)
-insert into category(name, parent_category_id) values ('watches', 3)
-insert into category(name, parent_category_id) values ('sunglasses', 3)
+--insert into category(name, parent_category_id) values ('laptops', 1)
+--insert into category(name, parent_category_id) values ('microwaves', 2)
+--insert into category(name, parent_category_id) values ('shoes', 3)
+--insert into category(name, parent_category_id) values ('Headphones', 1)
+--insert into category(name, parent_category_id) values ('Bikes', 4)
+--insert into category(name, parent_category_id) values ('watches', 3)
+--insert into category(name, parent_category_id) values ('sunglasses', 3)
 
 --
 -- insert into product_image (id) values(1)
