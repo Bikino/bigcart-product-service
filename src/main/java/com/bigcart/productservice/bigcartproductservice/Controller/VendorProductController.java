@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("vendorproduct")
@@ -321,6 +322,39 @@ public class VendorProductController {
             return new ResponseEntity(filteredList, new HttpHeaders(), HttpStatus.OK);
         }
     }
+
+    @GetMapping(value = "/findProduct")
+    public ResponseEntity findAllFullProducts(
+            @RequestParam(required = false) String categoryId,
+            @RequestParam(required = false) String vendorId,@RequestParam(required = false)String name
+    ) {
+        List<FullProductDTO> fullProductDTOList = new ArrayList<>();
+        for (VendorProduct vendorProduct : vendorProductService.findAll()) {
+            Product product = productService.findById(vendorProduct.getProductId());
+            Category category = product.getCategory();
+            fullProductDTOList.add(new FullProductDTO(category, product, vendorProduct));
+        }
+
+        fullProductDTOList=   fullProductDTOList.stream().filter(p -> {
+            if (vendorId != null) {
+            return p.getVendorProduct().getVendorId().toString().equals( vendorId);
+            }
+            else return true;} ).filter(p -> {
+             if (categoryId != null) {
+                 return p.getProduct ().getCategoryId().toString().equals(categoryId);
+             }
+             else return true;}).filter(p -> {
+            if (name != null) {
+                return p.getProduct().getName().contains( name );
+            }
+            else return true;} ).collect(Collectors.toList());
+
+         ;
+
+        return new ResponseEntity(fullProductDTOList, new HttpHeaders(), HttpStatus.OK);
+    }
+
+
 
     @PostMapping(value = "/approveProduct")
     public ResponseEntity approveProduct(@RequestBody List<ApproveProductDTO> approveProductDTOList) throws URISyntaxException {
