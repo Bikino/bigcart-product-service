@@ -134,11 +134,10 @@ public class ProductController {
     @PostMapping(value = "/image", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity getImageWithMediaType(@RequestBody String imageUrl) throws IOException {
 
-        File file = ResourceUtils.getFile(uploadDirectory +"/"+ imageUrl);//getFile("classpath");
+        File file = ResourceUtils.getFile(uploadDirectory +"/"+ imageUrl);
         InputStream in = new FileInputStream(file);
-        //inputStream in = getClass().getResourceAsStream("/uploads/" + imageUrl);
+
         if (in == null) {
-            //throw new IOException("Image with the URL: " + imageUrl + " does not exist.");
             return new ResponseEntity("", new HttpHeaders(), HttpStatus.NOT_FOUND);
 
         }
@@ -149,11 +148,6 @@ public class ProductController {
     public List<ProductVendorDTO> findAllVendorProductsDTO() {
         List<ProductVendorDTO> productVendorDTOList = new ArrayList<ProductVendorDTO>();
 
-
-
-//        RestTemplate restTemplate = new RestTemplate();
-//        List<VendorProductDTO> vendorProductDTOList = restTemplate.getForObject("USERMANAGEMENT-SERVICE", ArrayList.class);
-//        for (VendorProductDTO)
 
         return productVendorDTOList;
     }

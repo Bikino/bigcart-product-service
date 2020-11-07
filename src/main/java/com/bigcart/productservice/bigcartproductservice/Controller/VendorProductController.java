@@ -13,9 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
@@ -37,8 +41,9 @@ public class VendorProductController {
     @Autowired
     ProductImageService productImageService;
 
-@Autowired
+    @Autowired
     Notifier notifier;
+
     @GetMapping(value = "/")
     public ResponseEntity<List<VendorProduct>> getAllProductVendors() {
 
@@ -61,7 +66,7 @@ public class VendorProductController {
 
     // adding product from scratch when there is no same product
     @PostMapping(value = "/")
-    public ResponseEntity addProductRequest(@RequestBody Map<String, String> request) throws URISyntaxException {
+    public ResponseEntity addProductRequest(@RequestBody Map<String, String> request) throws URISyntaxException, FileNotFoundException {
 
         String categoryId = request.get("categoryId");
         String name = request.get("name");
@@ -72,8 +77,8 @@ public class VendorProductController {
         String imageUrl = request.get("imageUrl");
         String vendorId = request.get("vendorId");
 
-        if( categoryId == null || name == null || description == null || specifications == null
-        || quantity == null || price == null || imageUrl == null || vendorId == null) {
+        if (categoryId == null || name == null || description == null || specifications == null
+                || quantity == null || price == null || imageUrl == null || vendorId == null) {
             return new ResponseEntity("Required product information is not inputted.", new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
 
@@ -87,18 +92,17 @@ public class VendorProductController {
             prc = Float.parseFloat(price);
             cId = Long.parseLong(categoryId);
             vId = Long.parseLong(vendorId);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return new ResponseEntity("Quantity and price should be numeric.", new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
 
         Category category = categoryService.findById(cId);
-        if(category == null) {
+        if (category == null) {
             return new ResponseEntity("Selected category doesn't exist.", new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
-
-        InputStream in = getClass().getResourceAsStream("/uploads/" + imageUrl);
-        if(in == null) {
+        File file = ResourceUtils.getFile(ProductController.uploadDirectory + "/" + imageUrl);
+        InputStream in = new FileInputStream(file);
+        if (in == null) {
             return new ResponseEntity("Invalid image url is inputted.", new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
 
@@ -131,7 +135,7 @@ public class VendorProductController {
         vendorProductService.save(vendorProduct);
         productService.addProduct(product);
 
-        notifier.notifyAdmins("New Product bending approval",product.getName() +"  Was Just added Please review.");
+        notifier.notifyAdmins("New Product bending approval", product.getName() + "  Was Just added Please review.");
 
         return new ResponseEntity("Product added for admin review.", new HttpHeaders(), HttpStatus.OK);
     }
@@ -146,7 +150,6 @@ public class VendorProductController {
         if (vendorProduct.getVendorId() == null)
             return new ResponseEntity("Posted product doesn't include vendor id.", HttpStatus.BAD_REQUEST);
 
-        // verify vendor exists here
 
         Product p = productService.findById(vendorProduct.getProductId());
         if (p == null) {
@@ -209,18 +212,6 @@ public class VendorProductController {
             productVendorDTO.setVendorName(vendorProductService.getVendorNameByVendorId(vendorId));
             productVendorDTOList.add(productVendorDTO);
         }
-        // call to get vendor name
-        // merge and return
-        // List <ProductVendor> productVendorList = productVendorService.getProductV();
-
-//        RestTemplate restTemplate = new RestTemplate();
-//        List<VendorProductDTO> list = restTemplate.getForObject("USERMANAGEMENT-SERVICE", ArrayList.class);
-//        for (Ven)
-
-//        int i = 0;
-//
-//        RestTemplate restTemplate = new RestTemplate();
-//        ProductVendorDTO vendor = restTemplate.getForObject("usermanagement-service/vendor/1", ProductVendorDTO.class);
 
         return new ResponseEntity(productVendorDTOList, new HttpHeaders(), HttpStatus.OK);
     }
@@ -323,10 +314,11 @@ public class VendorProductController {
         }
     }
 
+    //search api
     @GetMapping(value = "/findProduct")
     public ResponseEntity findAllFullProducts(
             @RequestParam(required = false) String categoryId,
-            @RequestParam(required = false) String vendorId,@RequestParam(required = false)String name
+            @RequestParam(required = false) String vendorId, @RequestParam(required = false) String name
     ) {
         List<FullProductDTO> fullProductDTOList = new ArrayList<>();
         for (VendorProduct vendorProduct : vendorProductService.findAll()) {
@@ -335,27 +327,28 @@ public class VendorProductController {
             fullProductDTOList.add(new FullProductDTO(category, product, vendorProduct));
         }
 
-        fullProductDTOList=   fullProductDTOList.stream()
-                .filter(p->{ return p.getVendorProduct().getStatus().equals("approved");})
+        fullProductDTOList = fullProductDTOList.stream()
                 .filter(p -> {
-            if (vendorId != null) {
-            return p.getVendorProduct().getVendorId().toString().equals( vendorId);
-            }
-            else return true;} ).filter(p -> {
-             if (categoryId != null) {
-                 return p.getProduct ().getCategoryId().toString().equals(categoryId);
-             }
-             else return true;}).filter(p -> {
-            if (name != null) {
-                return p.getProduct().getName().contains( name );
-            }
-            else return true;} ).collect(Collectors.toList());
+                    return p.getVendorProduct().getStatus().equals("approved");
+                })
+                .filter(p -> {
+                    if (vendorId != null) {
+                        return p.getVendorProduct().getVendorId().toString().equals(vendorId);
+                    } else return true;
+                }).filter(p -> {
+                    if (categoryId != null) {
+                        return p.getProduct().getCategoryId().toString().equals(categoryId);
+                    } else return true;
+                }).filter(p -> {
+                    if (name != null) {
+                        return p.getProduct().getName().contains(name);
+                    } else return true;
+                }).collect(Collectors.toList());
 
-         ;
+        ;
 
         return new ResponseEntity(fullProductDTOList, new HttpHeaders(), HttpStatus.OK);
     }
-
 
 
     @PostMapping(value = "/approveProduct")
@@ -378,7 +371,7 @@ public class VendorProductController {
             }
 
             vendorProductService.save(vendorProduct);
-            notifier.notifyStatusUpdate(vendorProduct.getProductId(),vendorProduct.getStatus());
+            notifier.notifyStatusUpdate(vendorProduct.getProductId(), vendorProduct.getStatus());
         }
         return new ResponseEntity("ok", new HttpHeaders(), HttpStatus.OK);
     }
@@ -433,27 +426,12 @@ public class VendorProductController {
             Category category = product.getCategory();
             fullProductDTOList.add(new FullProductDTO(category, product, vendorProduct));
         }
-        fullProductDTOList=   fullProductDTOList.stream()
-                .filter(p->{ return p.getVendorProduct().getStatus().equals("approved");})
+        fullProductDTOList = fullProductDTOList.stream()
+                .filter(p -> {
+                    return p.getVendorProduct().getStatus().equals("approved");
+                })
                 .collect(Collectors.toList());
         return new ResponseEntity(fullProductDTOList, new HttpHeaders(), HttpStatus.OK);
     }
 
-    // only for testing rest template call
-    @GetMapping(value = "/test")
-    public ResponseEntity test() {
-        int i =5;
-        RestTemplate restTemplate = new RestTemplate();
-        VendorNameDTO v = restTemplate.getForObject("http://localhost:9988/vendor/1", VendorNameDTO.class);
-
-        return new ResponseEntity("", new HttpHeaders(), HttpStatus.OK);
-    }
 }
-
-//    @GetMapping(value = "/getAllProductsDTOAdmin")
-//    public ResponseEntity getAllProductsDTOAdmin(@RequestBody List<ApproveProductDTO> approveProductDTOList) {
-//
-//        return new ResponseEntity(productVendorService.
-//                productToProductDTOList(productVendorService.findAll()),
-//                new HttpHeaders(), HttpStatus.OK);
-//    }
