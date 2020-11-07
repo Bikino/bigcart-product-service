@@ -174,30 +174,19 @@ public class VendorProductServiceImpl implements VendorProductService {
         for(VendorProduct vendorProduct : vendorProductList) {
             List<Review> reviewList = reviewRepository.findAllByVendorProduct(vendorProduct);
             int ratingCount = reviewList.size();
-            double ratingSum = 0;
-            for(Review review : reviewList) {
-                ratingSum += review.getRating();
+            if(ratingCount!=0) {
+                double ratingSum = 0;
+                for (Review review : reviewList) {
+                    ratingSum += review.getRating();
+                }
+                vendorProduct.setRatingCount(ratingCount);
+                vendorProduct.setRating(ratingSum / ratingCount);
+
+                save(vendorProduct);
             }
-            vendorProduct.setRatingCount(ratingCount);
-            vendorProduct.setRating(ratingSum / ratingCount);
-            save(vendorProduct);
         }
     }
 
-//    @Override
-//    public Email sendEmail(Email emailToSend) {
-//        RestTemplate restTemplate = new RestTemplate();
-//        Email emailReceived;
-//        try {
-//            emailReceived = restTemplate.getForObject("http://localhost:9988/vendor/" + vendorId, VendorNameDTO.class);
-//        }
-//        catch (Exception e) {
-//            return null;
-//        }
-//        return v.getCompanyName();
-//
-//        return null;
-//    }
 
     //    @Override
     public boolean removeProductV(ListItmeDTO items) {
